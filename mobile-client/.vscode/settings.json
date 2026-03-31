@@ -1,0 +1,5 @@
+{
+  // Workspace-level .vscode/settings.json covers all settings.
+  // Mobile-client specific overrides only:
+  "editor.tabSize": 2
+}

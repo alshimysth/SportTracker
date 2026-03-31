@@ -1,0 +1,32 @@
+# ─── macOS ───────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ─── Environment / Secrets ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.p8
+*.jks
+*.mobileprovision
+
+# ─── IDE (keep .vscode/ workspace config, ignore user-specific files) ────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+
+# ─── Node / npm (mobile-client handled by its own .gitignore) ────────────────
+node_modules/
+
+# ─── Java / Maven (backend-api handled by its own .gitignore) ────────────────
+target/
+*.class

@@ -1,0 +1,27 @@
+{
+  "recommendations": [
+    // ─── Java / Spring Backend ─────────────────────────────────────────────
+    "vscjava.vscode-java-pack",           // Java Extension Pack (Language + Debugger + Test + Maven + Project Manager)
+    "vmware.vscode-spring-boot",          // Spring Boot language support & validations
+    "vscjava.vscode-spring-initializr",   // Generate Spring projects from within VSCode
+    "vscjava.vscode-spring-boot-dashboard", // Run / debug Spring Boot apps from sidebar
+    "redhat.vscode-xml",                  // XML support for pom.xml
+    "redhat.vscode-yaml",                 // YAML support for application.yml
+
+    // ─── Mobile / React Native ────────────────────────────────────────────
+    "expo.vscode-expo-tools",             // Expo app.json IntelliSense + EAS helpers
+    "msjsdiag.vscode-react-native",       // React Native debugger & IntelliSense
+
+    // ─── TypeScript / Styling ─────────────────────────────────────────────
+    "dbaeumer.vscode-eslint",             // ESLint inline errors
+    "esbenp.prettier-vscode",             // Prettier formatter
+    "bradlc.vscode-tailwindcss",          // Tailwind CSS IntelliSense in .tsx files
+
+    // ─── Infrastructure ───────────────────────────────────────────────────
+    "ms-azuretools.vscode-docker",        // Docker Compose syntax + container management
+
+    // ─── General DX ───────────────────────────────────────────────────────
+    "humao.rest-client",                  // Test API endpoints with .http files
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

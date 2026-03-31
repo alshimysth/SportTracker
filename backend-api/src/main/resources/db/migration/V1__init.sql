@@ -1,0 +1,5 @@
+-- V1: Initial schema placeholder
+-- Tables will be created in Epic 2 (Auth) and Epic 3 (Activity).
+-- All tables use snake_case. sport-specific metrics stored in JSONB columns.
+-- Extension for pgvector (Phase 2 AI plans):
+-- CREATE EXTENSION IF NOT EXISTS vector;

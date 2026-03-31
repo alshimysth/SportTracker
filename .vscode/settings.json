@@ -1,0 +1,70 @@
+{
+  // ─── Editor ─────────────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // ─── Java / Spring ───────────────────────────────────────────────────────
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-25",
+      "path": "/Library/Java/JavaVirtualMachines/bellsoft-java25.jdk/Contents/Home",
+      "default": true
+    }
+  ],
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.format.settings.profile": "GoogleStyle",
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.tabSize": 4
+  },
+  "spring-boot.ls.java.home": "/Library/Java/JavaVirtualMachines/bellsoft-java25.jdk/Contents/Home",
+
+  // ─── TypeScript / React Native ───────────────────────────────────────────
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // ─── Tailwind IntelliSense ───────────────────────────────────────────────
+  "tailwindCSS.experimental.classRegex": [
+    ["className\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]", 1],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // ─── ESLint ──────────────────────────────────────────────────────────────
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // ─── File Explorer ───────────────────────────────────────────────────────
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/build": true,
+    "**/target": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/target": true,
+    "**/build": true
+  }
+}

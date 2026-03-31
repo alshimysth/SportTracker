@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ─── Spring Boot Backend ─────────────────────────────────────────────
+    {
+      "type": "java",
+      "name": "Spring Boot: backend-api",
+      "request": "launch",
+      "mainClass": "com.sporttracker.api.BackendApiApplication",
+      "projectName": "backend-api",
+      "envFile": "${workspaceFolder}/backend-api/.env.local",
+      "vmArgs": "-Dspring.profiles.active=local"
+    },
+
+    // ─── Expo Mobile Client ───────────────────────────────────────────────
+    {
+      "name": "Expo: Start (Android)",
+      "type": "reactnative",
+      "request": "launch",
+      "platform": "android",
+      "cwd": "${workspaceFolder}/mobile-client"
+    },
+    {
+      "name": "Expo: Start (iOS)",
+      "type": "reactnative",
+      "request": "launch",
+      "platform": "ios",
+      "cwd": "${workspaceFolder}/mobile-client"
+    }
+  ]
+}
