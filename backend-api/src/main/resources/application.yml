@@ -38,6 +38,11 @@ management:
     health:
       show-details: when-authorized
 
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-must-be-at-least-32-chars!!}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}  # 24h default
+
 logging:
   level:
     com.sporttracker: INFO
