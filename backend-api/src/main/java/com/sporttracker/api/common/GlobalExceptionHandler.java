@@ -11,6 +11,15 @@ import java.net.URI;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    // ── 401 — Invalid credentials ─────────────────────────────────────────
+    @ExceptionHandler(InvalidCredentialsException.class)
+    ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setTitle("Invalid Credentials");
+        problem.setType(URI.create("/errors/invalid-credentials"));
+        return problem;
+    }
+
     // ── 409 — Duplicate email ──────────────────────────────────────────────
     @ExceptionHandler(EmailAlreadyUsedException.class)
     ProblemDetail handleEmailAlreadyUsed(EmailAlreadyUsedException ex) {

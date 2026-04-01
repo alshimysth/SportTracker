@@ -2,6 +2,7 @@ package com.sporttracker.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sporttracker.api.common.EmailAlreadyUsedException;
+import com.sporttracker.api.common.InvalidCredentialsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -85,6 +86,50 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/v1/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations").isArray());
+    }
+
+    // ── Login tests ───────────────────────────────────────────────────────────
+
+    @Test
+    void login_withValidCredentials_returns200AndToken() throws Exception {
+        LoginRequest request = new LoginRequest("user@example.com", "password123");
+
+        UserEntity user = new UserEntity();
+        user.setEmail("user@example.com");
+        user.setDisplayName("Athlete One");
+
+        when(authService.login(any())).thenReturn(new AuthResponse("jwt-token", user));
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("jwt-token"))
+                .andExpect(jsonPath("$.tokenType").value("Bearer"))
+                .andExpect(jsonPath("$.email").value("user@example.com"));
+    }
+
+    @Test
+    void login_withBadCredentials_returns401ProblemDetail() throws Exception {
+        LoginRequest request = new LoginRequest("user@example.com", "wrong");
+
+        when(authService.login(any())).thenThrow(new InvalidCredentialsException());
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.title").value("Invalid Credentials"))
+                .andExpect(jsonPath("$.status").value(401));
+    }
+
+    @Test
+    void login_withMissingFields_returns400WithViolations() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.violations").isArray());
     }
