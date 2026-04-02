@@ -29,6 +29,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    // ── 404 — Resource not found ──────────────────────────────────────────
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ProblemDetail handleResourceNotFound(ResourceNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Not Found");
+        problem.setType(URI.create("/errors/not-found"));
+        return problem;
+    }
+
     // ── 400 — Bean Validation failures ────────────────────────────────────
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
