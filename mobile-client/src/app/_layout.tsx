@@ -8,7 +8,7 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -16,6 +16,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuthStore } from '@/store/use-auth-store';
 
 const queryClient = new QueryClient();
 
@@ -35,11 +36,34 @@ export default function RootLayout() {
     Inter_700Bold,
   });
 
+  const { token, isHydrating, hydrate } = useAuthStore();
+  const router = useRouter();
+  const segments = useSegments();
+
+  // Restore JWT from SecureStore once on startup
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    hydrate();
+  }, []);
+
+  // Hide splash when fonts + hydration are both ready
+  useEffect(() => {
+    if ((fontsLoaded || fontError) && !isHydrating) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, isHydrating]);
+
+  // Auth guard — redirect after hydration is complete
+  useEffect(() => {
+    if (isHydrating) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!token && !inAuthGroup) {
+      router.replace('/(auth)/login');
+    } else if (token && inAuthGroup) {
+      router.replace('/(tabs)/');
+    }
+  }, [token, isHydrating, segments]);
 
   if (!fontsLoaded && !fontError) {
     return null;
