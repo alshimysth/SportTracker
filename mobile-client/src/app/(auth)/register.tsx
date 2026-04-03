@@ -11,7 +11,7 @@ import {
 import { router } from 'expo-router';
 import { useRegister } from '@/hooks/use-register';
 import type { ProblemDetail } from '@/types/auth';
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
@@ -28,7 +28,7 @@ export default function RegisterScreen() {
       {
         onSuccess: () => router.replace('/(tabs)/'),
         onError: (error) => {
-          if (axios.isAxiosError(error) && error.response) {
+          if (isAxiosError(error) && error.response) {
             const problem = error.response.data as ProblemDetail;
             setFieldError(problem.detail ?? problem.title);
           } else {
