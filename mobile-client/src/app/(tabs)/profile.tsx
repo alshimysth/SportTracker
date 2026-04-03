@@ -12,7 +12,7 @@ import {
 import { useProfile, useUpdateProfile } from '@/hooks/use-profile';
 import { useAuthStore } from '@/store/use-auth-store';
 import type { ProblemDetail } from '@/types/auth';
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 
 export default function ProfileScreen() {
   const { data: profile, isLoading } = useProfile();
@@ -52,7 +52,7 @@ export default function ProfileScreen() {
         setIsEditing(false);
       },
       onError: (err) => {
-        if (axios.isAxiosError(err) && err.response) {
+        if (isAxiosError(err) && err.response) {
           const problem = err.response.data as ProblemDetail;
           setError(problem.detail ?? problem.title);
         } else {
