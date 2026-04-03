@@ -23,4 +23,10 @@ public class AuthController {
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
+
+    @Operation(summary = "Authenticate with email and password")
+    @PostMapping("/login")
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
+    }
 }

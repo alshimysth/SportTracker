@@ -9,22 +9,21 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useRegister } from '@/hooks/use-register';
+import { useLogin } from '@/hooks/use-login';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
 
-export default function RegisterScreen() {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
   const [fieldError, setFieldError] = useState<string | null>(null);
 
-  const { mutate: register, isPending } = useRegister();
+  const { mutate: login, isPending } = useLogin();
 
   function handleSubmit() {
     setFieldError(null);
-    register(
-      { email, password, displayName },
+    login(
+      { email, password },
       {
         onSuccess: () => router.replace('/(tabs)/'),
         onError: (error) => {
@@ -47,24 +46,11 @@ export default function RegisterScreen() {
       <View className="flex-1 justify-center px-6">
         {/* Header */}
         <Text className="mb-2 font-sans text-3xl font-bold text-header dark:text-white">
-          Create account
+          Welcome back
         </Text>
         <Text className="mb-8 font-sans text-base text-gray-500 dark:text-gray-400">
-          Start tracking all your sports in one place.
+          Sign in to continue tracking your progress.
         </Text>
-
-        {/* Display Name */}
-        <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-          Display name
-        </Text>
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-          placeholder="Your athlete name"
-          placeholderTextColor="#9CA3AF"
-          autoCapitalize="words"
-          value={displayName}
-          onChangeText={setDisplayName}
-        />
 
         {/* Email */}
         <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -87,10 +73,10 @@ export default function RegisterScreen() {
         </Text>
         <TextInput
           className="mb-6 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-          placeholder="Minimum 8 characters"
+          placeholder="Your password"
           placeholderTextColor="#9CA3AF"
           secureTextEntry
-          autoComplete="new-password"
+          autoComplete="current-password"
           value={password}
           onChangeText={setPassword}
         />
@@ -109,20 +95,18 @@ export default function RegisterScreen() {
           {isPending ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="font-sans text-lg font-semibold text-white">
-              Create account
-            </Text>
+            <Text className="font-sans text-lg font-semibold text-white">Sign in</Text>
           )}
         </Pressable>
 
-        {/* Navigate to login */}
+        {/* Navigate to register */}
         <Pressable
-          onPress={() => router.push('/(auth)/login')}
+          onPress={() => router.push('/(auth)/register')}
           className="mt-4 min-h-[48px] items-center justify-center"
         >
           <Text className="font-sans text-sm text-gray-500 dark:text-gray-400">
-            Already have an account?{' '}
-            <Text className="font-semibold text-primary">Sign in</Text>
+            Don&apos;t have an account?{' '}
+            <Text className="font-semibold text-primary">Create one</Text>
           </Text>
         </Pressable>
       </View>
