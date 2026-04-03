@@ -43,7 +43,7 @@ export default function RootLayout() {
   // Restore JWT from SecureStore once on startup
   useEffect(() => {
     hydrate();
-  }, []);
+  }, [hydrate]);
 
   // Hide splash when fonts + hydration are both ready
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function RootLayout() {
     } else if (token && inAuthGroup) {
       router.replace('/(tabs)/');
     }
-  }, [token, isHydrating, segments]);
+  }, [token, isHydrating, segments, router]);
 
   if (!fontsLoaded && !fontError) {
     return null;
