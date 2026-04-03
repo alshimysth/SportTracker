@@ -12,6 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.sporttracker.api.common.GlobalExceptionHandler;
+import com.sporttracker.api.config.JwtAuthFilter;
 import com.sporttracker.api.config.SecurityConfig;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthController.class)
-@Import({SecurityConfig.class, GlobalExceptionHandler.class})
+@Import({SecurityConfig.class, JwtAuthFilter.class, GlobalExceptionHandler.class})
 class AuthControllerTest {
 
     @Autowired
@@ -33,6 +34,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @Test
     void register_withValidRequest_returns201AndToken() throws Exception {
