@@ -41,4 +41,12 @@ public class UserService {
 
         return new UserResponse(userRepository.save(user));
     }
+
+    @Transactional
+    public void deleteAccount(UUID userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        userRepository.deleteById(userId);
+    }
 }

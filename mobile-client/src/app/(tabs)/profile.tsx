@@ -8,8 +8,10 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import { useProfile, useUpdateProfile } from '@/hooks/use-profile';
+import { useDeleteAccount } from '@/hooks/use-delete-account';
 import { useAuthStore } from '@/store/use-auth-store';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
@@ -17,6 +19,7 @@ import { isAxiosError } from 'axios';
 export default function ProfileScreen() {
   const { data: profile, isLoading } = useProfile();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
   const [displayName, setDisplayName] = useState('');
@@ -24,6 +27,21 @@ export default function ProfileScreen() {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  function handleDeleteAccount() {
+    Alert.alert(
+      'Delete account',
+      'This will permanently delete your account and all your data. This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteAccount(),
+        },
+      ],
+    );
+  }
 
   function startEditing() {
     setDisplayName(profile?.displayName ?? '');
@@ -169,9 +187,24 @@ export default function ProfileScreen() {
             {/* Sign out */}
             <Pressable
               onPress={clearAuth}
-              className="min-h-[48px] items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-700"
+              className="mb-3 min-h-[48px] items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-700"
             >
               <Text className="font-sans text-base font-semibold text-red-500">Sign out</Text>
+            </Pressable>
+
+            {/* Delete account */}
+            <Pressable
+              onPress={handleDeleteAccount}
+              disabled={isDeleting}
+              className="min-h-[48px] items-center justify-center disabled:opacity-50"
+            >
+              {isDeleting ? (
+                <ActivityIndicator color="#EF4444" />
+              ) : (
+                <Text className="font-sans text-sm text-gray-400 underline dark:text-gray-600">
+                  Delete account
+                </Text>
+              )}
             </Pressable>
           </>
         )}

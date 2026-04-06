@@ -19,6 +19,8 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -101,6 +103,35 @@ class UserControllerTest {
         when(userService.getProfile(authId)).thenThrow(new ResourceNotFoundException("User not found"));
 
         mockMvc.perform(get("/api/v1/users/me"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title").value("Not Found"));
+    }
+
+    // ── Delete account tests ──────────────────────────────────────────────────
+
+    @Test
+    @WithMockUser(username = "00000000-0000-0000-0000-000000000001")
+    void deleteMyAccount_authenticated_returns204() throws Exception {
+        mockMvc.perform(delete("/api/v1/users/me"))
+                .andExpect(status().isNoContent());
+
+        verify(userService).deleteAccount(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+    }
+
+    @Test
+    void deleteMyAccount_unauthenticated_returns403() throws Exception {
+        mockMvc.perform(delete("/api/v1/users/me"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "00000000-0000-0000-0000-000000000001")
+    void deleteMyAccount_unknownUser_returns404ProblemDetail() throws Exception {
+        UUID authId = UUID.fromString("00000000-0000-0000-0000-000000000001");
+        doThrow(new ResourceNotFoundException("User not found"))
+                .when(userService).deleteAccount(authId);
+
+        mockMvc.perform(delete("/api/v1/users/me"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Not Found"));
     }

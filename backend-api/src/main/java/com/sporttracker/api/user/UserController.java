@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +34,12 @@ public class UserController {
             Authentication authentication,
             @Valid @RequestBody UpdateProfileRequest request) {
         return userService.updateProfile(UUID.fromString(authentication.getName()), request);
+    }
+
+    @Operation(summary = "Permanently delete the authenticated user's account and all associated data")
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMyAccount(Authentication authentication) {
+        userService.deleteAccount(UUID.fromString(authentication.getName()));
     }
 }
