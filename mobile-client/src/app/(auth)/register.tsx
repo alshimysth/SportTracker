@@ -83,7 +83,7 @@ export default function RegisterScreen() {
     register(
       { email, password, displayName },
       {
-        onSuccess: () => router.replace('/(tabs)/' as any),
+        onSuccess: () => router.replace('/(auth)/sport-selection' as any),
         onError: (error) => {
           if (isAxiosError(error) && error.response) {
             const problem = error.response.data as ProblemDetail;
