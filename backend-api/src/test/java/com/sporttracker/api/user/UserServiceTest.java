@@ -90,4 +90,24 @@ class UserServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
         verify(userRepository, never()).save(any());
     }
+
+    // ── deleteAccount tests ───────────────────────────────────────────────────
+
+    @Test
+    void deleteAccount_withValidId_deletesUser() {
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        userService.deleteAccount(userId);
+
+        verify(userRepository).deleteById(userId);
+    }
+
+    @Test
+    void deleteAccount_withUnknownId_throwsResourceNotFoundException() {
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.deleteAccount(userId))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(userRepository, never()).deleteById(any());
+    }
 }
