@@ -23,7 +23,7 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: 'index',
 };
 
 export default function RootLayout() {
@@ -52,27 +52,27 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError, isHydrating]);
 
-  // Auth guard — redirect after hydration is complete
+  // Auth guard — redirect only after both the navigator AND hydration are ready
   useEffect(() => {
     if (isHydrating) return;
+    if (!fontsLoaded && !fontError) return; // Stack not rendered yet
 
-    const inAuthGroup = segments[0] === '(auth)';
+    const inAuthGroup = (segments[0] as string) === '(auth)';
 
     if (!token && !inAuthGroup) {
-      router.replace('/(auth)/login');
+      router.replace('/(auth)/login' as any);
     } else if (token && inAuthGroup) {
-      router.replace('/(tabs)/');
+      router.replace('/(tabs)/' as any);
     }
-  }, [token, isHydrating, segments, router]);
+  }, [token, isHydrating, fontsLoaded, fontError, segments, router]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
-
+  // Always render the Stack so the navigator exists when the auth guard redirects.
+  // The native splash screen stays visible until SplashScreen.hideAsync() is called.
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
