@@ -66,5 +66,6 @@
     "**/node_modules": true,
     "**/target": true,
     "**/build": true
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

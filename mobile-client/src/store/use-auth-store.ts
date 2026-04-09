@@ -38,7 +38,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   hydrate: async () => {
-    const stored = await SecureStore.getItemAsync(TOKEN_KEY);
-    set({ token: stored ?? null, isHydrating: false });
+    try {
+      const stored = await SecureStore.getItemAsync(TOKEN_KEY);
+      set({ token: stored ?? null, isHydrating: false });
+    } catch {
+      // SecureStore failed (emulator / permissions) — treat as logged out
+      set({ token: null, isHydrating: false });
+    }
   },
 }));

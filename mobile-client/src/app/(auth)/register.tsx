@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,125 +7,426 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useRegister } from '@/hooks/use-register';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { colors } from '@/theme/colors';
+
+// ─── Password strength helpers ────────────────────────────────────────────────
+function getPasswordStrength(pwd: string): { score: number; label: string } {
+  if (pwd.length === 0) return { score: 0, label: '' };
+  let score = 0;
+  if (pwd.length >= 8) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  const labels = ['', 'Faible', 'Faible', 'Moyenne', 'Fort'];
+  return { score, label: labels[score] ?? 'Fort' };
+}
+
+function strengthSegmentColor(segmentIndex: number, score: number, isDark: boolean): string {
+  if (score === 0) return isDark ? colors.darkSurface : '#E5E7EB';
+  if (segmentIndex < score) {
+    if (score <= 2) return colors.brandOrange;
+    if (score === 3) return '#FACC15';
+    return colors.brandGreen;
+  }
+  return isDark ? colors.darkSurface : '#E5E7EB';
+}
 
 export default function RegisterScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [acceptedCgu, setAcceptedCgu] = useState(false);
   const [fieldError, setFieldError] = useState<string | null>(null);
 
   const { mutate: register, isPending } = useRegister();
 
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
+
   function handleSubmit() {
     setFieldError(null);
+
+    if (!acceptedCgu) {
+      setFieldError("Vous devez accepter les conditions d'utilisation.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setFieldError('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    const displayName = `${firstName.trim()} ${lastName.trim()}`.trim() || email;
+
     register(
       { email, password, displayName },
       {
-        onSuccess: () => router.replace('/(tabs)/'),
+        onSuccess: () => router.replace('/(auth)/sport-selection' as any),
         onError: (error) => {
           if (isAxiosError(error) && error.response) {
             const problem = error.response.data as ProblemDetail;
             setFieldError(problem.detail ?? problem.title);
           } else {
-            setFieldError('An unexpected error occurred. Please try again.');
+            setFieldError('Une erreur inattendue est survenue. Veuillez réessayer.');
           }
         },
       },
     );
   }
 
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const iconColor = isDark ? colors.darkTextMuted : '#9CA3AF';
+  const inputBg = isDark ? colors.darkSurface : '#FFFFFF';
+  const inputBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const inputText = isDark ? colors.darkText : '#111827';
+  const inputPlaceholder = isDark ? colors.placeholderDark : '#D1D5DB';
+  const labelColor = isDark ? colors.darkTextMuted : '#6B7280';
+  const pageBg = isDark ? colors.darkBg : '#FFFFFF';
+  const headerBg = isDark ? colors.darkBg : '#FFFFFF';
+  const headerBorder = isDark ? colors.darkBorder : '#F3F4F6';
+  const headerText = isDark ? colors.darkText : '#111827';
+  const backBtnBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const backBtnColor = isDark ? colors.darkTextMuted : '#374151';
+  const footerTextColor = isDark ? colors.placeholderDark : '#6B7280';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
+  const ctaStyle = isDark
+    ? {
+        backgroundColor: colors.ctaDark,
+        borderWidth: 1,
+        borderColor: 'rgba(56,189,248,0.38)',
+        shadowColor: colors.primaryCyan,
+        shadowOpacity: 0.25,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 0 },
+        elevation: 6,
+      }
+    : {
+        backgroundColor: colors.brandBlue,
+        shadowColor: colors.brandBlue,
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 6,
+      };
+
+  const checkboxBg = acceptedCgu ? colors.brandBlue : 'transparent';
+  const checkboxBorder = acceptedCgu ? colors.brandBlue : (isDark ? colors.darkBorder : '#D1D5DB');
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-background dark:bg-background-dark"
+      style={{ flex: 1, backgroundColor: pageBg }}
     >
-      <View className="flex-1 justify-center px-6">
-        {/* Header */}
-        <Text className="mb-2 font-sans text-3xl font-bold text-header dark:text-white">
-          Create account
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
+      <View
+        style={{
+          paddingTop: 56,
+          paddingHorizontal: 24,
+          paddingBottom: 16,
+          borderBottomWidth: 1,
+          borderBottomColor: headerBorder,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12,
+          backgroundColor: headerBg,
+        }}
+      >
+        <Pressable
+          onPress={() => router.back()}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            borderWidth: 1,
+            borderColor: backBtnBorder,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          hitSlop={8}
+          accessibilityLabel="Retour"
+        >
+          <Ionicons name="chevron-back" size={18} color={backBtnColor} />
+        </Pressable>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: headerText, fontFamily: 'Inter_600SemiBold' }}>
+          Créer un compte
         </Text>
-        <Text className="mb-8 font-sans text-base text-gray-500 dark:text-gray-400">
-          Start tracking all your sports in one place.
-        </Text>
+      </View>
 
-        {/* Display Name */}
-        <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-          Display name
-        </Text>
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-          placeholder="Your athlete name"
-          placeholderTextColor="#9CA3AF"
-          autoCapitalize="words"
-          value={displayName}
-          onChangeText={setDisplayName}
-        />
+      {/* ── Form ────────────────────────────────────────────────────────────── */}
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32, gap: 16 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Prénom + Nom row */}
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 12, fontWeight: '500', color: labelColor, marginBottom: 6, fontFamily: 'Inter_500Medium' }}>
+              Prénom
+            </Text>
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: inputBorder,
+                borderRadius: 12,
+                paddingHorizontal: 12,
+                paddingVertical: 14,
+                backgroundColor: inputBg,
+              }}
+            >
+              <TextInput
+                style={{ fontSize: 14, color: inputText, fontFamily: 'Inter_400Regular' }}
+                placeholder="Alex"
+                placeholderTextColor={inputPlaceholder}
+                autoCapitalize="words"
+                value={firstName}
+                onChangeText={setFirstName}
+              />
+            </View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 12, fontWeight: '500', color: labelColor, marginBottom: 6, fontFamily: 'Inter_500Medium' }}>
+              Nom
+            </Text>
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: inputBorder,
+                borderRadius: 12,
+                paddingHorizontal: 12,
+                paddingVertical: 14,
+                backgroundColor: inputBg,
+              }}
+            >
+              <TextInput
+                style={{ fontSize: 14, color: inputText, fontFamily: 'Inter_400Regular' }}
+                placeholder="Tracker"
+                placeholderTextColor={inputPlaceholder}
+                autoCapitalize="words"
+                value={lastName}
+                onChangeText={setLastName}
+              />
+            </View>
+          </View>
+        </View>
 
         {/* Email */}
-        <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-          Email
-        </Text>
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-          placeholder="you@example.com"
-          placeholderTextColor="#9CA3AF"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          value={email}
-          onChangeText={setEmail}
-        />
+        <View>
+          <Text style={{ fontSize: 12, fontWeight: '500', color: labelColor, marginBottom: 6, fontFamily: 'Inter_500Medium' }}>
+            Email
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: inputBorder,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              backgroundColor: inputBg,
+              gap: 12,
+            }}
+          >
+            <Ionicons name="mail-outline" size={18} color={iconColor} />
+            <TextInput
+              style={{ flex: 1, fontSize: 14, color: inputText, fontFamily: 'Inter_400Regular' }}
+              placeholder="alex@example.com"
+              placeholderTextColor={inputPlaceholder}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+        </View>
 
-        {/* Password */}
-        <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-          Password
-        </Text>
-        <TextInput
-          className="mb-6 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-          placeholder="Minimum 8 characters"
-          placeholderTextColor="#9CA3AF"
-          secureTextEntry
-          autoComplete="new-password"
-          value={password}
-          onChangeText={setPassword}
-        />
+        {/* Mot de passe */}
+        <View>
+          <Text style={{ fontSize: 12, fontWeight: '500', color: labelColor, marginBottom: 6, fontFamily: 'Inter_500Medium' }}>
+            Mot de passe
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: inputBorder,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              backgroundColor: inputBg,
+              gap: 12,
+            }}
+          >
+            <Ionicons name="lock-closed-outline" size={18} color={iconColor} />
+            <TextInput
+              style={{ flex: 1, fontSize: 14, color: inputText, fontFamily: 'Inter_400Regular' }}
+              placeholder="Minimum 8 caractères"
+              placeholderTextColor={inputPlaceholder}
+              secureTextEntry={!showPassword}
+              autoComplete="new-password"
+              value={password}
+              onChangeText={setPassword}
+            />
+            <Pressable onPress={() => setShowPassword((v) => !v)} hitSlop={8}>
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={iconColor} />
+            </Pressable>
+          </View>
+        </View>
 
-        {/* Error message */}
-        {fieldError && (
-          <Text className="mb-4 font-sans text-sm text-red-500">{fieldError}</Text>
+        {/* Confirmer le mot de passe */}
+        <View>
+          <Text style={{ fontSize: 12, fontWeight: '500', color: labelColor, marginBottom: 6, fontFamily: 'Inter_500Medium' }}>
+            Confirmer le mot de passe
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: inputBorder,
+              borderRadius: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              backgroundColor: inputBg,
+              gap: 12,
+            }}
+          >
+            <Ionicons name="lock-open-outline" size={18} color={iconColor} />
+            <TextInput
+              style={{ flex: 1, fontSize: 14, color: inputText, fontFamily: 'Inter_400Regular' }}
+              placeholder="Répéter le mot de passe"
+              placeholderTextColor={inputPlaceholder}
+              secureTextEntry={!showConfirm}
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <Pressable onPress={() => setShowConfirm((v) => !v)} hitSlop={8}>
+              <Ionicons name={showConfirm ? 'eye-off-outline' : 'eye-outline'} size={18} color={iconColor} />
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Password strength bar */}
+        {password.length > 0 && (
+          <View style={{ marginTop: -8 }}>
+            <View style={{ flexDirection: 'row', gap: 4 }}>
+              {[0, 1, 2, 3].map((i) => (
+                <View
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: 4,
+                    borderRadius: 4,
+                    backgroundColor: strengthSegmentColor(i, strength.score, isDark),
+                  }}
+                />
+              ))}
+            </View>
+            {strength.label ? (
+              <Text style={{ fontSize: 10, color: isDark ? colors.placeholderDark : '#9CA3AF', marginTop: 4, fontFamily: 'Inter_400Regular' }}>
+                Sécurité : {strength.label}
+              </Text>
+            ) : null}
+          </View>
         )}
 
-        {/* Submit — 64×64px min touch target per UX-DR10 */}
+        {/* CGU checkbox */}
+        <Pressable
+          onPress={() => setAcceptedCgu((v) => !v)}
+          style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, marginTop: 4 }}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: acceptedCgu }}
+        >
+          <View
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 4,
+              borderWidth: 2,
+              borderColor: checkboxBorder,
+              backgroundColor: checkboxBg,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 2,
+              flexShrink: 0,
+            }}
+          >
+            {acceptedCgu && <Ionicons name="checkmark" size={12} color="#FFFFFF" />}
+          </View>
+          <Text style={{ flex: 1, fontSize: 12, color: isDark ? colors.darkTextMuted : '#6B7280', lineHeight: 18, fontFamily: 'Inter_400Regular' }}>
+            J&apos;accepte les{' '}
+            <Text style={{ color: colors.brandOrange, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
+              Conditions d&apos;utilisation
+            </Text>
+            {' '}et la{' '}
+            <Text style={{ color: colors.brandOrange, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
+              Politique de confidentialité
+            </Text>
+          </Text>
+        </Pressable>
+
+        {/* Error */}
+        {fieldError && (
+          <Text style={{ fontSize: 13, color: '#EF4444', fontFamily: 'Inter_400Regular' }}>
+            {fieldError}
+          </Text>
+        )}
+
+        {/* CTA — min 64px touch target per UX-DR10 */}
         <Pressable
           onPress={handleSubmit}
           disabled={isPending}
-          className="min-h-[64px] items-center justify-center rounded-2xl bg-primary active:bg-primary-dark disabled:opacity-50"
+          style={[
+            {
+              minHeight: 64,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              marginTop: 8,
+              opacity: isPending ? 0.7 : 1,
+            },
+            ctaStyle,
+          ]}
         >
           {isPending ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={ctaTextColor} />
           ) : (
-            <Text className="font-sans text-lg font-semibold text-white">
-              Create account
+            <Text style={{ fontSize: 15, fontWeight: '600', color: ctaTextColor, fontFamily: 'Inter_600SemiBold' }}>
+              Créer mon compte
             </Text>
           )}
         </Pressable>
 
         {/* Navigate to login */}
         <Pressable
-          onPress={() => router.push('/(auth)/login')}
-          className="mt-4 min-h-[48px] items-center justify-center"
+          onPress={() => router.replace('/(auth)/login')}
+          style={{ alignItems: 'center', minHeight: 48, justifyContent: 'center' }}
         >
-          <Text className="font-sans text-sm text-gray-500 dark:text-gray-400">
-            Already have an account?{' '}
-            <Text className="font-semibold text-primary">Sign in</Text>
+          <Text style={{ fontSize: 14, color: footerTextColor, fontFamily: 'Inter_400Regular' }}>
+            Déjà un compte ?{' '}
+            <Text style={{ fontWeight: '500', color: colors.brandOrange, fontFamily: 'Inter_500Medium' }}>
+              Se connecter
+            </Text>
           </Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
