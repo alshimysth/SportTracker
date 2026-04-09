@@ -9,16 +9,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-const BRAND_BLUE = '#1C3F60';
-const BRAND_ORANGE = '#FF6B4A';
-const DARK_BG = '#0B111A';
-const DARK_SURFACE = '#222E42';
-const DARK_SURFACE2 = '#2A3A54';
-const DARK_BORDER = '#334060';
-const DARK_TEXT = '#F0F6FF';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 type Sport = {
   id: string;
@@ -29,8 +20,8 @@ type Sport = {
 };
 
 const SPORTS: Sport[] = [
-  { id: 'escalade', label: 'Escalade', icon: 'trail-sign-outline', accentColor: BRAND_BLUE, accentBg: '#EFF6FF' },
-  { id: 'course', label: 'Course à pied', icon: 'walk-outline', accentColor: BRAND_ORANGE, accentBg: '#FFF7F5' },
+  { id: 'escalade', label: 'Escalade', icon: 'trail-sign-outline', accentColor: colors.brandBlue, accentBg: '#EFF6FF' },
+  { id: 'course', label: 'Course à pied', icon: 'walk-outline', accentColor: colors.brandOrange, accentBg: '#FFF7F5' },
   { id: 'muscu', label: 'Musculation', icon: 'barbell-outline', accentColor: '#9333EA', accentBg: '#FAF5FF' },
   { id: 'ski', label: 'Ski', icon: 'snow-outline', accentColor: '#0EA5E9', accentBg: '#F0F9FF' },
   { id: 'velo', label: 'Vélo', icon: 'bicycle-outline', accentColor: '#16A34A', accentBg: '#F0FDF4' },
@@ -59,25 +50,26 @@ export default function SportSelectionScreen() {
     });
   }
 
-  const pageBg = isDark ? DARK_BG : '#FFFFFF';
-  const textPrimary = isDark ? DARK_TEXT : '#111827';
-  const textMuted = isDark ? DARK_TEXT_MUTED : '#6B7280';
-  const progressInactive = isDark ? DARK_SURFACE2 : '#E5E7EB';
-  const cardBorder = isDark ? DARK_BORDER : '#E5E7EB';
-  const ctaTextColor = isDark ? DARK_CYAN : '#FFFFFF';
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const pageBg = isDark ? colors.darkBg : '#FFFFFF';
+  const textPrimary = isDark ? colors.darkText : '#111827';
+  const textMuted = isDark ? colors.darkTextMuted : '#6B7280';
+  const progressInactive = isDark ? colors.darkSurface : '#E5E7EB';
+  const cardBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
   const ctaStyle = isDark
     ? {
-        backgroundColor: '#091828',
+        backgroundColor: colors.ctaDark,
         borderWidth: 1,
         borderColor: 'rgba(56,189,248,0.38)',
-        shadowColor: DARK_CYAN,
+        shadowColor: colors.primaryCyan,
         shadowOpacity: 0.25,
         shadowRadius: 14,
         elevation: 6,
       }
     : {
-        backgroundColor: BRAND_BLUE,
-        shadowColor: BRAND_BLUE,
+        backgroundColor: colors.brandBlue,
+        shadowColor: colors.brandBlue,
         shadowOpacity: 0.2,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 4 },
@@ -92,12 +84,12 @@ export default function SportSelectionScreen() {
       >
         {/* Progress bar — step 1/3 */}
         <View style={{ flexDirection: 'row', gap: 6, marginBottom: 28, marginTop: 8 }}>
-          <View style={{ flex: 1, height: 4, borderRadius: 4, backgroundColor: isDark ? DARK_CYAN : BRAND_BLUE }} />
+          <View style={{ flex: 1, height: 4, borderRadius: 4, backgroundColor: isDark ? colors.primaryCyan : colors.brandBlue }} />
           <View style={{ flex: 1, height: 4, borderRadius: 4, backgroundColor: progressInactive }} />
           <View style={{ flex: 1, height: 4, borderRadius: 4, backgroundColor: progressInactive }} />
         </View>
 
-        <Text style={{ fontSize: 11, fontWeight: '600', color: BRAND_ORANGE, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8, fontFamily: 'Inter_600SemiBold' }}>
+        <Text style={{ fontSize: 11, fontWeight: '600', color: colors.brandOrange, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8, fontFamily: 'Inter_600SemiBold' }}>
           Étape 1 sur 3
         </Text>
         <Text style={{ fontSize: 22, fontWeight: '600', color: textPrimary, letterSpacing: -0.5, marginBottom: 8, fontFamily: 'Inter_600SemiBold' }}>
@@ -121,10 +113,10 @@ export default function SportSelectionScreen() {
                   borderRadius: 16,
                   padding: 16,
                   borderWidth: 2,
-                  borderColor: isSelected ? (isDark ? 'rgba(56,189,248,0.45)' : BRAND_BLUE) : cardBorder,
+                  borderColor: isSelected ? (isDark ? 'rgba(56,189,248,0.45)' : colors.brandBlue) : cardBorder,
                   backgroundColor: isSelected
                     ? isDark ? 'rgba(56,189,248,0.06)' : 'rgba(28,63,96,0.04)'
-                    : isDark ? DARK_SURFACE : '#F9FAFB',
+                    : isDark ? colors.darkSurfaceAlt : '#F9FAFB',
                 }}
               >
                 <View
@@ -141,11 +133,11 @@ export default function SportSelectionScreen() {
                   <Ionicons
                     name={sport.icon}
                     size={22}
-                    color={isDark ? DARK_TEXT_MUTED : sport.accentColor}
+                    color={isDark ? colors.darkTextMuted : sport.accentColor}
                   />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: 13, fontWeight: '500', color: isDark ? DARK_TEXT : '#1F2937', fontFamily: 'Inter_500Medium', flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '500', color: isDark ? colors.darkText : '#1F2937', fontFamily: 'Inter_500Medium', flex: 1 }}>
                     {sport.label}
                   </Text>
                   {isSelected && (
@@ -154,12 +146,12 @@ export default function SportSelectionScreen() {
                         width: 20,
                         height: 20,
                         borderRadius: 10,
-                        backgroundColor: isDark ? DARK_CYAN : BRAND_BLUE,
+                        backgroundColor: isDark ? colors.primaryCyan : colors.brandBlue,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <Ionicons name="checkmark" size={12} color={isDark ? '#0B111A' : '#FFFFFF'} />
+                      <Ionicons name="checkmark" size={12} color={isDark ? colors.darkBg : '#FFFFFF'} />
                     </View>
                   )}
                 </View>

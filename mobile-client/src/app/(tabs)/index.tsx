@@ -7,17 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/store/use-auth-store';
-
-// ─── Brand tokens ─────────────────────────────────────────────────────────────
-const BRAND_BLUE = '#1C3F60';
-const BRAND_ORANGE = '#FF6B4A';
-const BRAND_GREEN = '#22C55E';
-const DARK_BG = '#0B111A';
-const DARK_SURFACE = '#222E42';
-const DARK_BORDER = '#334060';
-const DARK_TEXT = '#F0F6FF';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 // ─── Static demo data (will be replaced by API in Epic 2/4) ──────────────────
 const CALENDAR_DAYS = [
@@ -31,8 +21,8 @@ const CALENDAR_DAYS = [
 ];
 
 const WEEK_STATS = [
-  { icon: 'walk-outline' as const, label: 'Course', value: '32.4', unit: 'km', accentColor: BRAND_ORANGE, accentBg: '#FFF7F5', darkAccentBg: 'rgba(255,107,74,0.08)' },
-  { icon: 'trail-sign-outline' as const, label: 'Escalade', value: '14', unit: 'voies', accentColor: BRAND_BLUE, accentBg: '#EFF6FF', darkAccentBg: 'rgba(56,189,248,0.08)' },
+  { icon: 'walk-outline' as const, label: 'Course', value: '32.4', unit: 'km', accentColor: colors.brandOrange, accentBg: '#FFF7F5', darkAccentBg: 'rgba(255,107,74,0.08)' },
+  { icon: 'trail-sign-outline' as const, label: 'Escalade', value: '14', unit: 'voies', accentColor: colors.brandBlue, accentBg: '#EFF6FF', darkAccentBg: 'rgba(56,189,248,0.08)' },
 ];
 
 const RECENT_ACTIVITY = [
@@ -42,7 +32,7 @@ const RECENT_ACTIVITY = [
     subtitle: "Aujourd\u2019hui, 7h30",
     stat: '5.2 km',
     statSub: '28:45',
-    accentColor: BRAND_ORANGE,
+    accentColor: colors.brandOrange,
     accentBg: '#FFF7F5',
     darkAccentBg: 'rgba(255,107,74,0.06)',
     statColor: null,
@@ -53,10 +43,10 @@ const RECENT_ACTIVITY = [
     subtitle: 'Hier, 18h00',
     stat: 'V5 Max',
     statSub: '2h 15m',
-    accentColor: BRAND_BLUE,
+    accentColor: colors.brandBlue,
     accentBg: '#EFF6FF',
     darkAccentBg: 'rgba(56,189,248,0.06)',
-    statColor: BRAND_GREEN,
+    statColor: colors.brandGreen,
   },
   {
     icon: 'barbell-outline' as const,
@@ -76,15 +66,15 @@ export default function HomeScreen() {
   const isDark = colorScheme === 'dark';
   const user = useAuthStore((s) => s.user);
 
-  // ─── Theme tokens ────────────────────────────────────────────────────────────
-  const pageBg = isDark ? DARK_BG : '#F9FAFB';
-  const cardBg = isDark ? DARK_SURFACE : '#FFFFFF';
-  const cardBorder = isDark ? DARK_BORDER : '#F3F4F6';
-  const textPrimary = isDark ? DARK_TEXT : '#111827';
-  const textMuted = isDark ? DARK_TEXT_MUTED : '#6B7280';
-  const textSubtle = isDark ? '#506070' : '#9CA3AF';
-  const sectionTitle = isDark ? DARK_TEXT : '#1F2937';
-  const heroBg = isDark ? '#0D1E32' : BRAND_BLUE;
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const pageBg = isDark ? colors.darkBg : '#F9FAFB';
+  const cardBg = isDark ? colors.darkSurfaceAlt : '#FFFFFF';
+  const cardBorder = isDark ? colors.darkBorder : '#F3F4F6';
+  const textPrimary = isDark ? colors.darkText : '#111827';
+  const textMuted = isDark ? colors.darkTextMuted : '#6B7280';
+  const textSubtle = isDark ? colors.placeholderDark : '#9CA3AF';
+  const sectionTitle = isDark ? colors.darkText : '#1F2937';
+  const heroBg = isDark ? colors.heroDark : colors.brandBlue;
   const heroIconBg = isDark ? 'rgba(56,189,248,0.09)' : 'rgba(255,255,255,0.2)';
   const heroBellBg = isDark ? 'rgba(56,189,248,0.06)' : 'rgba(255,255,255,0.1)';
 
@@ -113,13 +103,13 @@ export default function HomeScreen() {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              <Ionicons name="person-outline" size={20} color={isDark ? DARK_CYAN : '#FFFFFF'} />
+              <Ionicons name="person-outline" size={20} color={isDark ? colors.primaryCyan : '#FFFFFF'} />
             </View>
             <View>
-              <Text style={{ fontSize: 12, color: isDark ? '#506070' : 'rgba(255,255,255,0.7)', fontFamily: 'Inter_400Regular' }}>
+              <Text style={{ fontSize: 12, color: isDark ? colors.placeholderDark : 'rgba(255,255,255,0.7)', fontFamily: 'Inter_400Regular' }}>
                 Bonjour,
               </Text>
-              <Text style={{ fontSize: 16, fontWeight: '500', color: isDark ? DARK_TEXT : '#FFFFFF', letterSpacing: -0.3, fontFamily: 'Inter_500Medium' }}>
+              <Text style={{ fontSize: 16, fontWeight: '500', color: isDark ? colors.darkText : '#FFFFFF', letterSpacing: -0.3, fontFamily: 'Inter_500Medium' }}>
                 {user?.displayName ?? 'Alex Tracker'}
               </Text>
             </View>
@@ -134,8 +124,8 @@ export default function HomeScreen() {
             position: 'relative',
           }}>
             {/* Notification dot */}
-            <View style={{ position: 'absolute', top: 10, right: 10, width: 8, height: 8, borderRadius: 4, backgroundColor: BRAND_ORANGE, zIndex: 1 }} />
-            <Ionicons name="notifications-outline" size={20} color={isDark ? DARK_CYAN : '#FFFFFF'} />
+            <View style={{ position: 'absolute', top: 10, right: 10, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.brandOrange, zIndex: 1 }} />
+            <Ionicons name="notifications-outline" size={20} color={isDark ? colors.primaryCyan : '#FFFFFF'} />
           </View>
         </View>
 
@@ -160,14 +150,14 @@ export default function HomeScreen() {
             >
               <Text style={{
                 fontSize: 12,
-                color: day.active ? BRAND_BLUE : (isDark ? DARK_TEXT : '#FFFFFF'),
+                color: day.active ? colors.brandBlue : (isDark ? colors.darkText : '#FFFFFF'),
                 fontFamily: day.active ? 'Inter_500Medium' : 'Inter_400Regular',
               }}>
                 {day.d}
               </Text>
               <Text style={{
                 fontSize: 14,
-                color: day.active ? BRAND_BLUE : (isDark ? DARK_TEXT : '#FFFFFF'),
+                color: day.active ? colors.brandBlue : (isDark ? colors.darkText : '#FFFFFF'),
                 fontFamily: day.active ? 'Inter_500Medium' : 'Inter_400Regular',
               }}>
                 {day.n}
@@ -209,7 +199,7 @@ export default function HomeScreen() {
                 justifyContent: 'center',
                 marginBottom: 8,
               }}>
-                <Ionicons name={stat.icon} size={16} color={isDark ? DARK_TEXT_MUTED : stat.accentColor} />
+                <Ionicons name={stat.icon} size={16} color={isDark ? colors.darkTextMuted : stat.accentColor} />
               </View>
               <Text style={{ fontSize: 12, color: textMuted, marginBottom: 2, fontFamily: 'Inter_400Regular' }}>
                 {stat.label}
@@ -228,7 +218,7 @@ export default function HomeScreen() {
             Activité récente
           </Text>
           <Pressable hitSlop={8}>
-            <Text style={{ fontSize: 12, color: BRAND_ORANGE, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
+            <Text style={{ fontSize: 12, color: colors.brandOrange, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
               Voir tout
             </Text>
           </Pressable>
@@ -257,7 +247,7 @@ export default function HomeScreen() {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-                <Ionicons name={item.icon} size={22} color={isDark ? DARK_TEXT_MUTED : item.accentColor} />
+                <Ionicons name={item.icon} size={22} color={isDark ? colors.darkTextMuted : item.accentColor} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, fontWeight: '500', color: textPrimary, marginBottom: 2, fontFamily: 'Inter_500Medium' }}>

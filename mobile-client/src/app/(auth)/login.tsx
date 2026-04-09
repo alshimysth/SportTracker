@@ -15,16 +15,7 @@ import { useLogin } from '@/hooks/use-login';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-// ─── Brand tokens (mirrors tailwind.config.js) ────────────────────────────────
-const BRAND_BLUE = '#1C3F60';
-const BRAND_ORANGE = '#FF6B4A';
-const DARK_BG = '#0B111A';
-const DARK_SURFACE2 = '#2A3A54';
-const DARK_BORDER = '#334060';
-const DARK_TEXT = '#F0F6FF';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme();
@@ -55,36 +46,36 @@ export default function LoginScreen() {
     );
   }
 
-  // ─── Icon colours ──────────────────────────────────────────────────────────
-  const iconColor = isDark ? DARK_TEXT_MUTED : '#9CA3AF';
-  const inputBg = isDark ? DARK_SURFACE2 : '#FFFFFF';
-  const inputBorder = isDark ? DARK_BORDER : '#E5E7EB';
-  const inputText = isDark ? DARK_TEXT : '#111827';
-  const inputPlaceholder = isDark ? '#506070' : '#D1D5DB';
-  const labelColor = isDark ? DARK_TEXT_MUTED : '#6B7280';
-  const dividerColor = isDark ? DARK_BORDER : '#F3F4F6';
-  const dividerTextColor = isDark ? '#506070' : '#9CA3AF';
-  const socialBtnBg = isDark ? DARK_SURFACE2 : '#FFFFFF';
-  const socialBtnBorder = isDark ? DARK_BORDER : '#E5E7EB';
-  const socialBtnText = isDark ? DARK_TEXT : '#374151';
-  const footerTextColor = isDark ? '#506070' : '#6B7280';
-  const ctaTextColor = isDark ? DARK_CYAN : '#FFFFFF';
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const iconColor = isDark ? colors.darkTextMuted : '#9CA3AF';
+  const inputBg = isDark ? colors.darkSurface : '#FFFFFF';
+  const inputBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const inputText = isDark ? colors.darkText : '#111827';
+  const inputPlaceholder = isDark ? colors.placeholderDark : '#D1D5DB';
+  const labelColor = isDark ? colors.darkTextMuted : '#6B7280';
+  const dividerColor = isDark ? colors.darkBorder : '#F3F4F6';
+  const dividerTextColor = isDark ? colors.placeholderDark : '#9CA3AF';
+  const socialBtnBg = isDark ? colors.darkSurface : '#FFFFFF';
+  const socialBtnBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const socialBtnText = isDark ? colors.darkText : '#374151';
+  const footerTextColor = isDark ? colors.placeholderDark : '#6B7280';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
 
   // CTA button styles
   const ctaStyle = isDark
     ? {
-        backgroundColor: '#091828',
+        backgroundColor: colors.ctaDark,
         borderWidth: 1,
         borderColor: 'rgba(56,189,248,0.38)',
-        shadowColor: DARK_CYAN,
+        shadowColor: colors.primaryCyan,
         shadowOpacity: 0.25,
         shadowRadius: 14,
         shadowOffset: { width: 0, height: 0 },
         elevation: 6,
       }
     : {
-        backgroundColor: BRAND_BLUE,
-        shadowColor: BRAND_BLUE,
+        backgroundColor: colors.brandBlue,
+        shadowColor: colors.brandBlue,
         shadowOpacity: 0.25,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 4 },
@@ -92,13 +83,13 @@ export default function LoginScreen() {
       };
 
   // Hero header styles
-  const heroBg = isDark ? '#0D1E32' : BRAND_BLUE;
+  const heroBg = isDark ? colors.heroDark : colors.brandBlue;
   const heroIconBg = isDark ? 'rgba(56,189,248,0.09)' : 'rgba(255,255,255,0.2)';
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, backgroundColor: isDark ? DARK_BG : '#FFFFFF' }}
+      style={{ flex: 1, backgroundColor: isDark ? colors.darkBg : '#FFFFFF' }}
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -129,14 +120,14 @@ export default function LoginScreen() {
               marginBottom: 16,
             }}
           >
-            <Ionicons name="locate" size={32} color={isDark ? DARK_CYAN : '#FFFFFF'} />
+            <Ionicons name="locate" size={32} color={isDark ? colors.primaryCyan : '#FFFFFF'} />
           </View>
 
           <Text
             style={{
               fontSize: 24,
               fontWeight: '600',
-              color: isDark ? DARK_TEXT : '#FFFFFF',
+              color: isDark ? colors.darkText : '#FFFFFF',
               letterSpacing: -0.5,
               fontFamily: 'Inter_600SemiBold',
             }}
@@ -146,7 +137,7 @@ export default function LoginScreen() {
           <Text
             style={{
               fontSize: 13,
-              color: isDark ? '#506070' : 'rgba(255,255,255,0.6)',
+              color: isDark ? colors.placeholderDark : 'rgba(255,255,255,0.6)',
               marginTop: 4,
               fontFamily: 'Inter_400Regular',
             }}
@@ -238,7 +229,7 @@ export default function LoginScreen() {
             hitSlop={8}
             style={{ alignSelf: 'flex-end' }}
           >
-            <Text style={{ fontSize: 12, fontWeight: '500', color: BRAND_ORANGE, fontFamily: 'Inter_500Medium' }}>
+            <Text style={{ fontSize: 12, fontWeight: '500', color: colors.brandOrange, fontFamily: 'Inter_500Medium' }}>
               Mot de passe oublié ?
             </Text>
           </Pressable>
@@ -325,7 +316,7 @@ export default function LoginScreen() {
                 minHeight: 48,
               }}
             >
-              <Ionicons name="logo-apple" size={18} color={isDark ? DARK_TEXT : '#111827'} />
+              <Ionicons name="logo-apple" size={18} color={isDark ? colors.darkText : '#111827'} />
               <Text style={{ fontSize: 14, fontWeight: '500', color: socialBtnText, fontFamily: 'Inter_500Medium' }}>
                 Apple
               </Text>
@@ -338,8 +329,8 @@ export default function LoginScreen() {
             style={{ alignItems: 'center', minHeight: 48, justifyContent: 'center', marginTop: 8 }}
           >
             <Text style={{ fontSize: 14, color: footerTextColor, fontFamily: 'Inter_400Regular' }}>
-              Pas de compte ? 
-              <Text style={{ fontWeight: '500', color: BRAND_ORANGE, fontFamily: 'Inter_500Medium' }}>
+              Pas de compte ? 
+              <Text style={{ fontWeight: '500', color: colors.brandOrange, fontFamily: 'Inter_500Medium' }}>
                 S&apos;inscrire
               </Text>
             </Text>

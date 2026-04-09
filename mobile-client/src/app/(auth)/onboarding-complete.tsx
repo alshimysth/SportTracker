@@ -7,20 +7,11 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-const BRAND_BLUE = '#1C3F60';
-const BRAND_ORANGE = '#FF6B4A';
-const BRAND_GREEN = '#22C55E';
-const DARK_BG = '#0B111A';
-const DARK_SURFACE = '#222E42';
-const DARK_BORDER = '#334060';
-const DARK_TEXT = '#F0F6FF';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 const SPORTS_SUMMARY = [
-  { id: 'escalade', label: 'Escalade', level: 'Intermédiaire', icon: 'trail-sign-outline' as const, accentColor: BRAND_BLUE },
-  { id: 'course', label: 'Course', level: 'Débutant', icon: 'walk-outline' as const, accentColor: BRAND_ORANGE },
+  { id: 'escalade', label: 'Escalade', level: 'Intermédiaire', icon: 'trail-sign-outline' as const, accentColor: colors.brandBlue },
+  { id: 'course', label: 'Course', level: 'Débutant', icon: 'walk-outline' as const, accentColor: colors.brandOrange },
   { id: 'muscu', label: 'Muscu', level: 'Avancé', icon: 'barbell-outline' as const, accentColor: '#9333EA' },
 ];
 
@@ -28,25 +19,26 @@ export default function OnboardingCompleteScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const pageBg = isDark ? DARK_BG : '#FFFFFF';
-  const textPrimary = isDark ? DARK_TEXT : '#111827';
-  const textMuted = isDark ? DARK_TEXT_MUTED : '#6B7280';
-  const cardBg = isDark ? DARK_SURFACE : '#F9FAFB';
-  const dividerColor = isDark ? DARK_BORDER : '#E5E7EB';
-  const ctaTextColor = isDark ? DARK_CYAN : '#FFFFFF';
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const pageBg = isDark ? colors.darkBg : '#FFFFFF';
+  const textPrimary = isDark ? colors.darkText : '#111827';
+  const textMuted = isDark ? colors.darkTextMuted : '#6B7280';
+  const cardBg = isDark ? colors.darkSurfaceAlt : '#F9FAFB';
+  const dividerColor = isDark ? colors.darkBorder : '#E5E7EB';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
   const ctaStyle = isDark
     ? {
-        backgroundColor: '#091828',
+        backgroundColor: colors.ctaDark,
         borderWidth: 1,
         borderColor: 'rgba(56,189,248,0.38)',
-        shadowColor: DARK_CYAN,
+        shadowColor: colors.primaryCyan,
         shadowOpacity: 0.25,
         shadowRadius: 14,
         elevation: 6,
       }
     : {
-        backgroundColor: BRAND_BLUE,
-        shadowColor: BRAND_BLUE,
+        backgroundColor: colors.brandBlue,
+        shadowColor: colors.brandBlue,
         shadowOpacity: 0.2,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 4 },
@@ -75,12 +67,12 @@ export default function OnboardingCompleteScreen() {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              <Ionicons name="locate" size={48} color={isDark ? DARK_CYAN : BRAND_BLUE} />
+              <Ionicons name="locate" size={48} color={isDark ? colors.primaryCyan : colors.brandBlue} />
             </View>
           </View>
           {/* Confetti dots */}
-          <View style={{ position: 'absolute', top: 8, right: 4, width: 16, height: 16, borderRadius: 8, backgroundColor: BRAND_ORANGE }} />
-          <View style={{ position: 'absolute', bottom: 12, left: 0, width: 12, height: 12, borderRadius: 6, backgroundColor: BRAND_GREEN }} />
+          <View style={{ position: 'absolute', top: 8, right: 4, width: 16, height: 16, borderRadius: 8, backgroundColor: colors.brandOrange }} />
+          <View style={{ position: 'absolute', bottom: 12, left: 0, width: 12, height: 12, borderRadius: 6, backgroundColor: colors.brandGreen }} />
           <View style={{ position: 'absolute', top: 20, left: 10, width: 8, height: 8, borderRadius: 4, backgroundColor: '#FACC15' }} />
         </View>
 
@@ -104,9 +96,9 @@ export default function OnboardingCompleteScreen() {
           {SPORTS_SUMMARY.map((sport, idx) => (
             <View key={sport.id} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ alignItems: 'center', gap: 4 }}>
-                <Ionicons name={sport.icon} size={24} color={isDark ? DARK_TEXT_MUTED : sport.accentColor} />
+                <Ionicons name={sport.icon} size={24} color={isDark ? colors.darkTextMuted : sport.accentColor} />
                 <Text style={{ fontSize: 11, color: textMuted, fontFamily: 'Inter_400Regular' }}>{sport.label}</Text>
-                <Text style={{ fontSize: 11, fontWeight: '500', color: isDark ? DARK_TEXT : '#374151', fontFamily: 'Inter_500Medium' }}>{sport.level}</Text>
+                <Text style={{ fontSize: 11, fontWeight: '500', color: isDark ? colors.darkText : '#374151', fontFamily: 'Inter_500Medium' }}>{sport.level}</Text>
               </View>
               {idx < SPORTS_SUMMARY.length - 1 && (
                 <View style={{ width: 1, height: 40, backgroundColor: dividerColor, marginHorizontal: 16 }} />
@@ -136,7 +128,7 @@ export default function OnboardingCompleteScreen() {
         </Pressable>
 
         <Pressable onPress={() => router.replace('/(tabs)/' as any)} hitSlop={8}>
-          <Text style={{ fontSize: 14, color: isDark ? '#506070' : '#9CA3AF', fontFamily: 'Inter_400Regular' }}>
+          <Text style={{ fontSize: 14, color: isDark ? colors.placeholderDark : '#9CA3AF', fontFamily: 'Inter_400Regular' }}>
             Configurer plus tard
           </Text>
         </Pressable>

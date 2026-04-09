@@ -2,22 +2,17 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-// ─── Brand tokens ─────────────────────────────────────────────────────────────
-const BRAND_BLUE = '#1C3F60';
-const DARK_SURFACE = '#222E42';
-const DARK_BORDER = '#334060';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const activeColor = isDark ? DARK_CYAN : BRAND_BLUE;
-  const inactiveColor = isDark ? DARK_TEXT_MUTED : '#9CA3AF';
-  const tabBarBg = isDark ? DARK_SURFACE : 'rgba(255,255,255,0.9)';
-  const tabBarBorder = isDark ? DARK_BORDER : '#F3F4F6';
+  // ─── JS-only colour values (Tabs component doesn't accept className) ───────
+  const activeColor = isDark ? colors.primaryCyan : colors.brandBlue;
+  const inactiveColor = isDark ? colors.darkTextMuted : '#9CA3AF';
+  const tabBarBg = isDark ? colors.darkSurfaceAlt : 'rgba(255,255,255,0.9)';
+  const tabBarBorder = isDark ? colors.darkBorder : '#F3F4F6';
 
   return (
     <Tabs
@@ -34,7 +29,7 @@ export default function TabLayout() {
           paddingTop: 16,
           height: 80,
           // Glass-morphism shadow (light) / subtle border (dark)
-          shadowColor: isDark ? DARK_CYAN : '#000000',
+          shadowColor: isDark ? colors.primaryCyan : '#000000',
           shadowOpacity: isDark ? 0.04 : 0.06,
           shadowRadius: isDark ? 0 : 16,
           shadowOffset: { width: 0, height: -4 },

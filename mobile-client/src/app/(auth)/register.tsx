@@ -15,16 +15,7 @@ import { useRegister } from '@/hooks/use-register';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-// ─── Brand tokens ─────────────────────────────────────────────────────────────
-const BRAND_BLUE = '#1C3F60';
-const BRAND_ORANGE = '#FF6B4A';
-const DARK_BG = '#0B111A';
-const DARK_SURFACE2 = '#2A3A54';
-const DARK_BORDER = '#334060';
-const DARK_TEXT = '#F0F6FF';
-const DARK_TEXT_MUTED = '#8AABB8';
-const DARK_CYAN = '#38BDF8';
+import { colors } from '@/theme/colors';
 
 // ─── Password strength helpers ────────────────────────────────────────────────
 function getPasswordStrength(pwd: string): { score: number; label: string } {
@@ -39,13 +30,13 @@ function getPasswordStrength(pwd: string): { score: number; label: string } {
 }
 
 function strengthSegmentColor(segmentIndex: number, score: number, isDark: boolean): string {
-  if (score === 0) return isDark ? '#2A3A54' : '#E5E7EB';
+  if (score === 0) return isDark ? colors.darkSurface : '#E5E7EB';
   if (segmentIndex < score) {
-    if (score <= 2) return BRAND_ORANGE;
+    if (score <= 2) return colors.brandOrange;
     if (score === 3) return '#FACC15';
-    return '#22C55E';
+    return colors.brandGreen;
   }
-  return isDark ? '#2A3A54' : '#E5E7EB';
+  return isDark ? colors.darkSurface : '#E5E7EB';
 }
 
 export default function RegisterScreen() {
@@ -96,43 +87,43 @@ export default function RegisterScreen() {
     );
   }
 
-  // ─── Derived colours ───────────────────────────────────────────────────────
-  const iconColor = isDark ? DARK_TEXT_MUTED : '#9CA3AF';
-  const inputBg = isDark ? DARK_SURFACE2 : '#FFFFFF';
-  const inputBorder = isDark ? DARK_BORDER : '#E5E7EB';
-  const inputText = isDark ? DARK_TEXT : '#111827';
-  const inputPlaceholder = isDark ? '#506070' : '#D1D5DB';
-  const labelColor = isDark ? DARK_TEXT_MUTED : '#6B7280';
-  const pageBg = isDark ? DARK_BG : '#FFFFFF';
-  const headerBg = isDark ? DARK_BG : '#FFFFFF';
-  const headerBorder = isDark ? DARK_BORDER : '#F3F4F6';
-  const headerText = isDark ? DARK_TEXT : '#111827';
-  const backBtnBorder = isDark ? DARK_BORDER : '#E5E7EB';
-  const backBtnColor = isDark ? DARK_TEXT_MUTED : '#374151';
-  const footerTextColor = isDark ? '#506070' : '#6B7280';
-  const ctaTextColor = isDark ? DARK_CYAN : '#FFFFFF';
+  // ─── JS-only colour values (passed to props that don't accept className) ──
+  const iconColor = isDark ? colors.darkTextMuted : '#9CA3AF';
+  const inputBg = isDark ? colors.darkSurface : '#FFFFFF';
+  const inputBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const inputText = isDark ? colors.darkText : '#111827';
+  const inputPlaceholder = isDark ? colors.placeholderDark : '#D1D5DB';
+  const labelColor = isDark ? colors.darkTextMuted : '#6B7280';
+  const pageBg = isDark ? colors.darkBg : '#FFFFFF';
+  const headerBg = isDark ? colors.darkBg : '#FFFFFF';
+  const headerBorder = isDark ? colors.darkBorder : '#F3F4F6';
+  const headerText = isDark ? colors.darkText : '#111827';
+  const backBtnBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const backBtnColor = isDark ? colors.darkTextMuted : '#374151';
+  const footerTextColor = isDark ? colors.placeholderDark : '#6B7280';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
   const ctaStyle = isDark
     ? {
-        backgroundColor: '#091828',
+        backgroundColor: colors.ctaDark,
         borderWidth: 1,
         borderColor: 'rgba(56,189,248,0.38)',
-        shadowColor: DARK_CYAN,
+        shadowColor: colors.primaryCyan,
         shadowOpacity: 0.25,
         shadowRadius: 14,
         shadowOffset: { width: 0, height: 0 },
         elevation: 6,
       }
     : {
-        backgroundColor: BRAND_BLUE,
-        shadowColor: BRAND_BLUE,
+        backgroundColor: colors.brandBlue,
+        shadowColor: colors.brandBlue,
         shadowOpacity: 0.25,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 4 },
         elevation: 6,
       };
 
-  const checkboxBg = acceptedCgu ? BRAND_BLUE : 'transparent';
-  const checkboxBorder = acceptedCgu ? BRAND_BLUE : (isDark ? DARK_BORDER : '#D1D5DB');
+  const checkboxBg = acceptedCgu ? colors.brandBlue : 'transparent';
+  const checkboxBorder = acceptedCgu ? colors.brandBlue : (isDark ? colors.darkBorder : '#D1D5DB');
 
   return (
     <KeyboardAvoidingView
@@ -349,7 +340,7 @@ export default function RegisterScreen() {
               ))}
             </View>
             {strength.label ? (
-              <Text style={{ fontSize: 10, color: isDark ? '#506070' : '#9CA3AF', marginTop: 4, fontFamily: 'Inter_400Regular' }}>
+              <Text style={{ fontSize: 10, color: isDark ? colors.placeholderDark : '#9CA3AF', marginTop: 4, fontFamily: 'Inter_400Regular' }}>
                 Sécurité : {strength.label}
               </Text>
             ) : null}
@@ -379,13 +370,13 @@ export default function RegisterScreen() {
           >
             {acceptedCgu && <Ionicons name="checkmark" size={12} color="#FFFFFF" />}
           </View>
-          <Text style={{ flex: 1, fontSize: 12, color: isDark ? DARK_TEXT_MUTED : '#6B7280', lineHeight: 18, fontFamily: 'Inter_400Regular' }}>
+          <Text style={{ flex: 1, fontSize: 12, color: isDark ? colors.darkTextMuted : '#6B7280', lineHeight: 18, fontFamily: 'Inter_400Regular' }}>
             J&apos;accepte les{' '}
-            <Text style={{ color: BRAND_ORANGE, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
+            <Text style={{ color: colors.brandOrange, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
               Conditions d&apos;utilisation
             </Text>
             {' '}et la{' '}
-            <Text style={{ color: BRAND_ORANGE, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
+            <Text style={{ color: colors.brandOrange, fontWeight: '500', fontFamily: 'Inter_500Medium' }}>
               Politique de confidentialité
             </Text>
           </Text>
@@ -430,7 +421,7 @@ export default function RegisterScreen() {
         >
           <Text style={{ fontSize: 14, color: footerTextColor, fontFamily: 'Inter_400Regular' }}>
             Déjà un compte ?{' '}
-            <Text style={{ fontWeight: '500', color: BRAND_ORANGE, fontFamily: 'Inter_500Medium' }}>
+            <Text style={{ fontWeight: '500', color: colors.brandOrange, fontFamily: 'Inter_500Medium' }}>
               Se connecter
             </Text>
           </Text>

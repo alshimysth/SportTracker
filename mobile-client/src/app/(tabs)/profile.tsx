@@ -15,6 +15,7 @@ import { useDeleteAccount } from '@/hooks/use-delete-account';
 import { useAuthStore } from '@/store/use-auth-store';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
+import { colors } from '@/theme/colors';
 
 export default function ProfileScreen() {
   const { data: profile, isLoading } = useProfile();
@@ -83,7 +84,7 @@ export default function ProfileScreen() {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-background dark:bg-background-dark">
-        <ActivityIndicator size="large" color="#FF6B4A" />
+        <ActivityIndicator size="large" color={colors.brandOrange} />
       </View>
     );
   }

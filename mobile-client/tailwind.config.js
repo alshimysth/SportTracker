@@ -14,12 +14,25 @@ module.exports = {
         // Base backgrounds
         background: {
           DEFAULT: '#FFFFFF', // Alpine Pure light background
-          dark: '#0F172A',    // Midnight Peak dark background
+          dark: '#0B111A',    // Midnight Peak dark background (updated from #0F172A)
         },
         // Card / surface backgrounds
         surface: {
           DEFAULT: '#F8F9FA', // Light card surface
-          dark: '#1E293B',    // Dark card surface
+          dark: '#222E42',    // Dark card surface
+          dark2: '#2A3A54',   // Deeper dark surface
+        },
+        // Border colors
+        border: {
+          DEFAULT: '#E5E7EB',
+          dark: '#334060',
+        },
+        // Text colors
+        text: {
+          DEFAULT: '#111827',
+          muted: '#6B7280',
+          dark: '#F0F6FF',
+          darkMuted: '#8AABB8',
         },
         // Header / brand colour
         header: {
@@ -42,6 +55,17 @@ module.exports = {
           DEFAULT: '#0369A1', // Light Blue (light mode data emphasis)
           dark: '#38BDF8',    // Dark Cyan (dark mode data emphasis)
         },
+        // ─── Flat shorthand aliases (for className="bg-darkBg dark:bg-darkBg" etc.) ──
+        darkBg: '#0B111A',
+        darkSurface: '#2A3A54',
+        darkSurfaceAlt: '#222E42',
+        darkBorder: '#334060',
+        darkText: '#F0F6FF',
+        darkTextMuted: '#8AABB8',
+        brandBlue: '#1C3F60',
+        brandOrange: '#FF6B4A',
+        brandGreen: '#22C55E',
+        primaryCyan: '#38BDF8',
       },
       // ─── Typography ──────────────────────────────────────────────────────────
       fontFamily: {
