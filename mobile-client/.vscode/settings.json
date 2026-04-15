@@ -2,5 +2,5 @@
   // Workspace-level .vscode/settings.json covers all settings.
   // Mobile-client specific overrides only:
   "editor.tabSize": 2,
-  "typescript.tsserver.experimental.enableProjectDiagnostics": false
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false
 }
