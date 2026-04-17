@@ -22,7 +22,13 @@ export default function SportSelectScreen() {
 
   function handleSelectSport(sport: SportType) {
     setActiveSport(sport);
-    router.push('/tracking/session' as any);
+    // Route to the sport-specific tracking screen
+    // Running has its own screen (Story 2.2); others still use the generic session stub
+    if (sport === 'running') {
+      router.push('/tracking/running' as any);
+    } else {
+      router.push('/tracking/session' as any);
+    }
   }
 
   return (

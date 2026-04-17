@@ -41,10 +41,12 @@ You are the Lead Engineer for **SportTracker**, a multi-sport tracking mobile ap
 ## 5. Git & Commit Workflow
 
 - **Branch protection:** NEVER push directly to `main`. Always use a feature branch and create a Pull Request.
-- **Naming:** `feat/`, `fix/`, `refactor/`, `chore/`, `test/` prefixes.
+- **One branch per story:** Each Epic story gets its own dedicated branch. Create it at the start, push at the end.
+- **Branch naming:** `feat/epic{N}-story{N}.{N}-{short-description}`
+  - Examples: `feat/epic2-story2.3-running-metrics`, `feat/epic2-story2.4-climbing-grades`
 - **Conventional Commits:** `feat(auth):`, `fix(profile):`, `refactor(ui):`, `test(activity):`, `chore(deps):`.
 - **Atomic commits:** Schema migration, backend service, and mobile screen in logical separate commits.
-- **Epic scope:** Reference the epic in scope when possible (e.g., `feat(epic2/tracking):`).
+- **Epic scope:** Reference the epic and story in scope (e.g., `feat(epic2/story2.3):`).
 
 ## 6. CI/CD & GitHub Actions
 
