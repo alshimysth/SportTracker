@@ -3,9 +3,7 @@ name: Backend CI
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "backend-api/**"
-      - ".github/workflows/ci-backend.yml"
+    # No paths filter on PRs — always run to avoid "stuck checks" after merge commits
   push:
     branches: [main]
     paths:
