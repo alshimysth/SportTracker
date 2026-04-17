@@ -10,14 +10,19 @@ import {
   Platform,
   Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useProfile, useUpdateProfile } from '@/hooks/use-profile';
 import { useDeleteAccount } from '@/hooks/use-delete-account';
 import { useAuthStore } from '@/store/use-auth-store';
 import type { ProblemDetail } from '@/types/auth';
 import { isAxiosError } from 'axios';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { colors } from '@/theme/colors';
 
 export default function ProfileScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const { data: profile, isLoading } = useProfile();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
@@ -29,17 +34,46 @@ export default function ProfileScreen() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // ─── JS-only colour values (passed to props that don't accept className) ───
+  const bg = isDark ? colors.darkBg : '#F8F9FA';
+  const heroBg = isDark ? colors.heroDark : colors.brandBlue;
+  const cardBg = isDark ? colors.darkSurfaceAlt : '#FFFFFF';
+  const cardBorder = isDark ? colors.darkBorder : '#F3F4F6';
+  const inputBg = isDark ? colors.darkSurface : '#FFFFFF';
+  const inputBorder = isDark ? colors.darkBorder : '#E5E7EB';
+  const inputText = isDark ? colors.darkText : '#111827';
+  const inputPlaceholder = isDark ? colors.placeholderDark : '#9CA3AF';
+  const labelColor = isDark ? colors.darkTextMuted : '#6B7280';
+  const mutedText = isDark ? colors.darkTextMuted : '#64748B';
+  const ctaTextColor = isDark ? colors.primaryCyan : '#FFFFFF';
+
+  const ctaStyle = isDark
+    ? {
+        backgroundColor: colors.ctaDark,
+        borderWidth: 1,
+        borderColor: 'rgba(56,189,248,0.38)',
+        shadowColor: colors.primaryCyan,
+        shadowOpacity: 0.25,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 0 },
+        elevation: 6,
+      }
+    : {
+        backgroundColor: colors.brandOrange,
+        shadowColor: colors.brandOrange,
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 6,
+      };
+
   function handleDeleteAccount() {
     Alert.alert(
-      'Delete account',
-      'This will permanently delete your account and all your data. This action cannot be undone.',
+      'Supprimer le compte',
+      'Cette action supprimera définitivement ton compte et toutes tes données. Cette action est irréversible.',
       [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => deleteAccount(),
-        },
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Supprimer', style: 'destructive', onPress: () => deleteAccount() },
       ],
     );
   }
@@ -75,7 +109,7 @@ export default function ProfileScreen() {
           const problem = err.response.data as ProblemDetail;
           setError(problem.detail ?? problem.title);
         } else {
-          setError('An unexpected error occurred. Please try again.');
+          setError('Une erreur inattendue est survenue. Veuillez réessayer.');
         }
       },
     });
@@ -83,132 +117,329 @@ export default function ProfileScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-background dark:bg-background-dark">
-        <ActivityIndicator size="large" color={colors.brandOrange} />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: bg }}>
+        <ActivityIndicator size="large" color={isDark ? colors.primaryCyan : colors.brandOrange} />
       </View>
     );
   }
 
+  const initial = (profile?.displayName ?? '?')[0].toUpperCase();
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-background dark:bg-background-dark"
+      style={{ flex: 1, backgroundColor: bg }}
     >
-      <ScrollView contentContainerClassName="px-6 pt-12 pb-8">
-        {/* Avatar placeholder */}
-        <View className="mb-6 items-center">
-          <View className="h-24 w-24 items-center justify-center rounded-full bg-primary">
-            <Text className="font-sans text-3xl font-bold text-white">
-              {(profile?.displayName ?? '?')[0].toUpperCase()}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Hero Header ─────────────────────────────────────────────────── */}
+        <View
+          style={{
+            backgroundColor: heroBg,
+            paddingTop: 72,
+            paddingBottom: 48,
+            paddingHorizontal: 24,
+            borderBottomLeftRadius: 40,
+            borderBottomRightRadius: 40,
+            alignItems: 'center',
+          }}
+        >
+          {/* Avatar */}
+          <View
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 44,
+              backgroundColor: colors.brandOrange,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 3,
+              borderColor: 'rgba(255,255,255,0.3)',
+              marginBottom: 16,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 34,
+                fontWeight: '700',
+                color: '#FFFFFF',
+                fontFamily: 'Inter_700Bold',
+              }}
+            >
+              {initial}
             </Text>
           </View>
-          <Text className="mt-3 font-sans text-xl font-bold text-header dark:text-white">
-            {profile?.displayName}
+
+          {/* Name */}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '600',
+              color: '#FFFFFF',
+              fontFamily: 'Inter_600SemiBold',
+              letterSpacing: -0.3,
+            }}
+          >
+            {profile?.displayName ?? '—'}
           </Text>
-          <Text className="font-sans text-sm text-gray-500 dark:text-gray-400">
+
+          {/* Email */}
+          <Text
+            style={{
+              fontSize: 13,
+              color: 'rgba(255,255,255,0.65)',
+              marginTop: 4,
+              fontFamily: 'Inter_400Regular',
+            }}
+          >
             {profile?.email}
           </Text>
+
+          {/* Bio */}
+          {profile?.bio ? (
+            <Text
+              style={{
+                fontSize: 13,
+                color: 'rgba(255,255,255,0.55)',
+                marginTop: 10,
+                textAlign: 'center',
+                paddingHorizontal: 24,
+                fontFamily: 'Inter_400Regular',
+              }}
+            >
+              {profile.bio}
+            </Text>
+          ) : null}
         </View>
 
-        {isEditing ? (
-          <>
-            {/* Display name */}
-            <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-              Display name
+        {/* ── Content ─────────────────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 24, paddingTop: 28, paddingBottom: 40, gap: 12 }}>
+
+          {success && (
+            <Text
+              style={{
+                fontSize: 13,
+                color: colors.brandGreen,
+                textAlign: 'center',
+                marginBottom: 4,
+                fontFamily: 'Inter_400Regular',
+              }}
+            >
+              Profil mis à jour !
             </Text>
-            <TextInput
-              className="mb-4 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-              value={displayName}
-              onChangeText={setDisplayName}
-              autoCapitalize="words"
-            />
+          )}
 
-            {/* Bio */}
-            <Text className="mb-1 font-sans text-sm font-medium text-gray-700 dark:text-gray-300">
-              Bio
-            </Text>
-            <TextInput
-              className="mb-6 rounded-xl border border-gray-200 bg-surface px-4 py-3 font-sans text-base text-gray-900 dark:border-gray-700 dark:bg-surface-dark dark:text-white"
-              value={bio}
-              onChangeText={setBio}
-              multiline
-              numberOfLines={3}
-              placeholder="Tell others about your sports..."
-              placeholderTextColor="#9CA3AF"
-            />
+          {isEditing ? (
+            <>
+              {/* Display name field */}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '500',
+                    color: labelColor,
+                    marginBottom: 6,
+                    fontFamily: 'Inter_500Medium',
+                  }}
+                >
+                  Nom affiché
+                </Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: inputBorder,
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    backgroundColor: inputBg,
+                    fontSize: 14,
+                    color: inputText,
+                    fontFamily: 'Inter_400Regular',
+                  }}
+                  value={displayName}
+                  onChangeText={setDisplayName}
+                  autoCapitalize="words"
+                  placeholderTextColor={inputPlaceholder}
+                />
+              </View>
 
-            {error && (
-              <Text className="mb-4 font-sans text-sm text-red-500">{error}</Text>
-            )}
+              {/* Bio field */}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '500',
+                    color: labelColor,
+                    marginBottom: 6,
+                    fontFamily: 'Inter_500Medium',
+                  }}
+                >
+                  Bio
+                </Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: inputBorder,
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    backgroundColor: inputBg,
+                    fontSize: 14,
+                    color: inputText,
+                    fontFamily: 'Inter_400Regular',
+                    minHeight: 88,
+                    textAlignVertical: 'top',
+                  }}
+                  value={bio}
+                  onChangeText={setBio}
+                  multiline
+                  numberOfLines={3}
+                  placeholder="Parle de tes sports..."
+                  placeholderTextColor={inputPlaceholder}
+                />
+              </View>
 
-            {/* Save */}
-            <Pressable
-              onPress={handleSave}
-              disabled={isPending}
-              className="mb-3 min-h-[64px] items-center justify-center rounded-2xl bg-primary active:bg-primary-dark disabled:opacity-50"
-            >
-              {isPending ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text className="font-sans text-lg font-semibold text-white">Save changes</Text>
-              )}
-            </Pressable>
-
-            {/* Cancel */}
-            <Pressable
-              onPress={() => setIsEditing(false)}
-              className="min-h-[48px] items-center justify-center"
-            >
-              <Text className="font-sans text-sm font-semibold text-gray-500">Cancel</Text>
-            </Pressable>
-          </>
-        ) : (
-          <>
-            {/* Bio display */}
-            {profile?.bio ? (
-              <Text className="mb-6 text-center font-sans text-sm text-gray-600 dark:text-gray-400">
-                {profile.bio}
-              </Text>
-            ) : null}
-
-            {success && (
-              <Text className="mb-4 text-center font-sans text-sm text-green-500">
-                Profile updated!
-              </Text>
-            )}
-
-            {/* Edit profile */}
-            <Pressable
-              onPress={startEditing}
-              className="mb-3 min-h-[64px] items-center justify-center rounded-2xl bg-primary active:bg-primary-dark"
-            >
-              <Text className="font-sans text-lg font-semibold text-white">Edit profile</Text>
-            </Pressable>
-
-            {/* Sign out */}
-            <Pressable
-              onPress={clearAuth}
-              className="mb-3 min-h-[48px] items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-700"
-            >
-              <Text className="font-sans text-base font-semibold text-red-500">Sign out</Text>
-            </Pressable>
-
-            {/* Delete account */}
-            <Pressable
-              onPress={handleDeleteAccount}
-              disabled={isDeleting}
-              className="min-h-[48px] items-center justify-center disabled:opacity-50"
-            >
-              {isDeleting ? (
-                <ActivityIndicator color="#EF4444" />
-              ) : (
-                <Text className="font-sans text-sm text-gray-400 underline dark:text-gray-600">
-                  Delete account
+              {error && (
+                <Text style={{ fontSize: 13, color: '#EF4444', fontFamily: 'Inter_400Regular' }}>
+                  {error}
                 </Text>
               )}
-            </Pressable>
-          </>
-        )}
+
+              {/* Save — 64px touch target (UX-DR10) */}
+              <Pressable
+                onPress={handleSave}
+                disabled={isPending}
+                style={[
+                  {
+                    minHeight: 64,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    marginTop: 8,
+                    opacity: isPending ? 0.7 : 1,
+                  },
+                  ctaStyle,
+                ]}
+              >
+                {isPending ? (
+                  <ActivityIndicator color={ctaTextColor} />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '600',
+                      color: ctaTextColor,
+                      fontFamily: 'Inter_600SemiBold',
+                    }}
+                  >
+                    Enregistrer
+                  </Text>
+                )}
+              </Pressable>
+
+              {/* Cancel */}
+              <Pressable
+                onPress={() => setIsEditing(false)}
+                style={{ minHeight: 48, alignItems: 'center', justifyContent: 'center' }}
+              >
+                <Text style={{ fontSize: 14, color: mutedText, fontFamily: 'Inter_400Regular' }}>
+                  Annuler
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              {/* Edit profile — 64px touch target (UX-DR10) */}
+              <Pressable
+                onPress={startEditing}
+                style={[
+                  {
+                    minHeight: 64,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    flexDirection: 'row',
+                    gap: 8,
+                  },
+                  ctaStyle,
+                ]}
+              >
+                <Ionicons name="pencil-outline" size={18} color={ctaTextColor} />
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '600',
+                    color: ctaTextColor,
+                    fontFamily: 'Inter_600SemiBold',
+                  }}
+                >
+                  Modifier le profil
+                </Text>
+              </Pressable>
+
+              {/* Sign out — secondary card button */}
+              <Pressable
+                onPress={clearAuth}
+                style={{
+                  minHeight: 56,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: cardBorder,
+                  backgroundColor: cardBg,
+                  flexDirection: 'row',
+                  gap: 8,
+                }}
+              >
+                <Ionicons
+                  name="log-out-outline"
+                  size={20}
+                  color={isDark ? colors.darkTextMuted : '#6B7280'}
+                />
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '500',
+                    color: isDark ? colors.darkTextMuted : '#374151',
+                    fontFamily: 'Inter_500Medium',
+                  }}
+                >
+                  Se déconnecter
+                </Text>
+              </Pressable>
+
+              {/* Delete account — small destructive text link */}
+              <Pressable
+                onPress={handleDeleteAccount}
+                disabled={isDeleting}
+                style={{
+                  minHeight: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 8,
+                  opacity: isDeleting ? 0.5 : 1,
+                }}
+              >
+                {isDeleting ? (
+                  <ActivityIndicator color="#EF4444" size="small" />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: isDark ? colors.placeholderDark : '#9CA3AF',
+                      fontFamily: 'Inter_400Regular',
+                    }}
+                  >
+                    Supprimer le compte
+                  </Text>
+                )}
+              </Pressable>
+            </>
+          )}
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

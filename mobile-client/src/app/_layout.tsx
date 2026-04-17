@@ -76,6 +76,11 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          {/* Full-screen tracking flow — tab bar hidden, swipe-back disabled (UX-DR7) */}
+          <Stack.Screen
+            name="tracking"
+            options={{ headerShown: false, presentation: 'fullScreenModal' }}
+          />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

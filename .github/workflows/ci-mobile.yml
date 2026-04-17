@@ -3,9 +3,7 @@ name: Mobile CI
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "mobile-client/**"
-      - ".github/workflows/ci-mobile.yml"
+    # No paths filter on PRs — always run to avoid "stuck checks" after merge commits
   push:
     branches: [main]
     paths:

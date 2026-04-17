@@ -30,3 +30,11 @@ node_modules/
 # ─── Java / Maven (backend-api handled by its own .gitignore) ────────────────
 target/
 *.class
+
+# ─── Claude Code & BMAD tooling (local, not shared) ─────────────────────────
+.claude/
+_bmad/
+_bmad-output/
+
+# ─── VS Code user-specific settings ──────────────────────────────────────────
+**/.vscode/settings.json
