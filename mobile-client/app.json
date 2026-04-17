@@ -9,9 +9,13 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "SportTracker utilise ta position pour enregistrer ton parcours de course."
+      }
     },
     "android": {
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "adaptiveIcon": {
         "backgroundColor": "#1C3F60",
         "foregroundImage": "./src/assets/images/android-icon-foreground.png",
@@ -50,7 +54,13 @@
           "fonts": []
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "SportTracker utilise ta position pour enregistrer ton parcours de course."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

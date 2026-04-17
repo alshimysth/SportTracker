@@ -4,8 +4,9 @@ export default function TrackingLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      {/* gestureEnabled: false — swipe-back disabled during active session (UX spec) */}
+      {/* gestureEnabled: false — swipe-back disabled during active sessions (UX spec) */}
       <Stack.Screen name="session" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="running" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
