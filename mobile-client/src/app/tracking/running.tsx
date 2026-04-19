@@ -16,34 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { colors } from '@/theme/colors';
 import { useSportStore } from '@/store/use-sport-store';
 import { useRunningTracker } from '@/hooks/use-running-tracker';
-import { MetricTile } from '@/components/features/tracking/MetricTile';
-
-// ─── Formatting helpers ───────────────────────────────────────────────────────
-
-/** 1 240 m → "1.24" / 980 m → "980 m" */
-function formatDistance(meters: number): string {
-  if (meters < 1000) return `${Math.round(meters)} m`;
-  return (meters / 1000).toFixed(2);
-}
-
-function distanceUnit(meters: number): string {
-  return meters < 1000 ? '' : 'km';
-}
-
-/** 512 s → "08:32" */
-function formatDuration(secs: number): string {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-
-/** 330 s/km → "5'30"" */
-function formatPace(secsPerKm: number): string {
-  if (secsPerKm <= 0) return "--'--";
-  const m = Math.floor(secsPerKm / 60);
-  const s = Math.round(secsPerKm % 60);
-  return `${m}'${String(s).padStart(2, '0')}"`;
-}
+import { RunningMetricsDisplay } from '@/components/features/tracking/RunningMetricsDisplay';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -165,38 +138,19 @@ export default function RunningScreen() {
         </Pressable>
       </View>
 
-      {/* ── 2. Metric bar — TabularMetricDisplay (UX spec) ────────────────── */}
-      <View
-        style={{
-          backgroundColor: cardBg,
-          flexDirection: 'row',
-          borderBottomWidth: 1,
-          borderBottomColor: cardBorder,
-        }}
-      >
-        <MetricTile
-          value={formatDistance(metrics.distanceMeters)}
-          label={distanceUnit(metrics.distanceMeters) || 'distance'}
-          valueColor={metricValue}
-          labelColor={metricLabel}
-          separator
-          borderColor={metricDivider}
-        />
-        <MetricTile
-          value={formatDuration(metrics.durationSeconds)}
-          label="durée"
-          valueColor={metricValue}
-          labelColor={metricLabel}
-          separator
-          borderColor={metricDivider}
-        />
-        <MetricTile
-          value={formatPace(metrics.paceSecsPerKm)}
-          label="allure /km"
-          valueColor={accent}
-          labelColor={metricLabel}
-        />
-      </View>
+      {/* ── 2. Featured metrics panel — TabularMetricDisplay (UX-DR4) ──────── */}
+      <RunningMetricsDisplay
+        distanceMeters={metrics.distanceMeters}
+        durationSeconds={metrics.durationSeconds}
+        paceSecsPerKm={metrics.paceSecsPerKm}
+        accentColor={accent}
+        valueColor={metricValue}
+        secondaryValueColor={metricValue}
+        labelColor={metricLabel}
+        dividerColor={metricDivider}
+        cardBg={cardBg}
+        cardBorder={cardBorder}
+      />
 
       {/* ── 3. Map + polyline ─────────────────────────────────────────────── */}
       <View style={{ flex: 1 }}>
