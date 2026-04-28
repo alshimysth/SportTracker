@@ -9,7 +9,7 @@
  *   5. "Logger la série" CTA  — 64px primary button (UX-DR10)
  *   6. Rest timer card        — 90s auto-countdown, dismissible (conditional)
  *   7. WorkoutLogPanel        — append-only set list + total volume
- *   8. HoldToFinish stub      — Story 2.6 will replace this
+ *   8. HoldToFinishButton     — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
 import { View, Text, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
@@ -25,6 +25,7 @@ import {
 import { ExercisePicker } from '@/components/features/tracking/ExercisePicker';
 import { SetInputRow } from '@/components/features/tracking/SetInputRow';
 import { WorkoutLogPanel } from '@/components/features/tracking/WorkoutLogPanel';
+import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
 
 // ─── Timer formatter ──────────────────────────────────────────────────────────
 
@@ -315,36 +316,24 @@ export default function WeightliftingScreen() {
         cardBorder={cardBorder}
       />
 
-      {/* ── 8. HoldToFinish stub — Story 2.6 ───────────────────────────────── */}
+      {/* ── 8. HoldToFinish ─────────────────────────────────────────────────── */}
       <View
         style={{
           paddingHorizontal: 24,
           paddingBottom: 40,
           paddingTop: 12,
           backgroundColor: bg,
+          alignItems: 'center',
         }}
       >
-        <View
-          style={{
-            minHeight: 64,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 20,
-            backgroundColor: accent,
-            opacity: 0.45,
+        <HoldToFinishButton
+          onComplete={() => {
+            stopSession();
+            router.replace('/(tabs)/' as any);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: '600',
-              color: '#FFFFFF',
-              fontFamily: 'Inter_600SemiBold',
-            }}
-          >
-            Maintenir pour terminer — Story 2.6
-          </Text>
-        </View>
+          accentColor={accent}
+          textColor={textMuted}
+        />
       </View>
     </View>
   );

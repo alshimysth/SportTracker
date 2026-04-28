@@ -62,9 +62,9 @@ class UserControllerTest {
     }
 
     @Test
-    void getMyProfile_unauthenticated_returns403() throws Exception {
+    void getMyProfile_unauthenticated_returns401() throws Exception {
         mockMvc.perform(get("/api/v1/users/me"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -119,9 +119,9 @@ class UserControllerTest {
     }
 
     @Test
-    void deleteMyAccount_unauthenticated_returns403() throws Exception {
+    void deleteMyAccount_unauthenticated_returns401() throws Exception {
         mockMvc.perform(delete("/api/v1/users/me"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
