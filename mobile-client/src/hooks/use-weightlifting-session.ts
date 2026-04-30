@@ -80,7 +80,7 @@ const REST_DURATION    = 90;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function totalVolume(sets: WorkoutSet[]): number {
+export function totalVolume(sets: WorkoutSet[]): number {
   return sets.reduce((acc, s) => acc + s.reps * s.weight, 0);
 }
 

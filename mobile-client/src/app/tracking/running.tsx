@@ -6,7 +6,7 @@
  *   2. Metric bar            — Distance | Durée | Allure  (TabularMetricDisplay, UX spec)
  *   3. MapView + Polyline    — live GPS route (expo-location + react-native-maps)
  *   4. GPS status chip       — lock indicator
- *   5. HoldToFinish stub     — Story 2.6 will replace this
+ *   5. HoldToFinishButton    — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
 import { View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import MapView, { Polyline, Marker, PROVIDER_DEFAULT } from 'react-native-maps';
@@ -17,6 +17,7 @@ import { colors } from '@/theme/colors';
 import { useSportStore } from '@/store/use-sport-store';
 import { useRunningTracker } from '@/hooks/use-running-tracker';
 import { RunningMetricsDisplay } from '@/components/features/tracking/RunningMetricsDisplay';
+import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -252,28 +253,15 @@ export default function RunningScreen() {
           backgroundColor: bg,
         }}
       >
-        {/* HoldToFinishButton placeholder — Story 2.6 */}
-        <View
-          style={{
-            minHeight: 64,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 20,
-            backgroundColor: accent,
-            opacity: 0.45,
+        <HoldToFinishButton
+          onComplete={() => {
+            stopTracking();
+            clearActiveSport();
+            router.replace('/(tabs)/' as any);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: '600',
-              color: '#FFFFFF',
-              fontFamily: 'Inter_600SemiBold',
-            }}
-          >
-            Maintenir pour terminer — Story 2.6
-          </Text>
-        </View>
+          accentColor={accent}
+          textColor={metricLabel}
+        />
       </View>
     </View>
   );
