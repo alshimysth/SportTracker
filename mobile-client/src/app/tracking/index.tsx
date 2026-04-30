@@ -26,6 +26,8 @@ export default function SportSelectScreen() {
     // Running has its own screen (Story 2.2); others still use the generic session stub
     if (sport === 'running') {
       router.push('/tracking/running' as any);
+    } else if (sport === 'climbing') {
+      router.push('/tracking/climbing' as any);
     } else {
       router.push('/tracking/session' as any);
     }

@@ -7,6 +7,7 @@ export default function TrackingLayout() {
       {/* gestureEnabled: false — swipe-back disabled during active sessions (UX spec) */}
       <Stack.Screen name="session" options={{ gestureEnabled: false }} />
       <Stack.Screen name="running" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="climbing" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
