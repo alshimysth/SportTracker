@@ -8,6 +8,7 @@ export default function TrackingLayout() {
       <Stack.Screen name="session" options={{ gestureEnabled: false }} />
       <Stack.Screen name="running" options={{ gestureEnabled: false }} />
       <Stack.Screen name="climbing" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="weightlifting" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
