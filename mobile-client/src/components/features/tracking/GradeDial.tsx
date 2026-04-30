@@ -94,7 +94,6 @@ export function GradeDial({
           alignItems: 'center',
           justifyContent: 'center',
           marginRight: CHIP_GAP,
-          // Subtle scale hint handled via opacity
         }}
       >
         <Text
@@ -114,7 +113,6 @@ export function GradeDial({
 
   return (
     <View style={{ paddingVertical: 12 }}>
-      {/* Label */}
       <Text
         style={{
           fontSize: 11,
@@ -149,7 +147,6 @@ export function GradeDial({
         })}
       />
 
-      {/* Selected grade large display */}
       <Text
         style={{
           fontSize: 48,

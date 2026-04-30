@@ -1,5 +1,5 @@
 /**
- * Climbing tracking screen — Story 2.4
+ * Climbing tracking screen — Story 2.4 / 2.6
  *
  * Layout (top → bottom):
  *   1. Compact blue/cyan header  — sport label + discard button
@@ -8,7 +8,7 @@
  *   4. StyleSelector             — Flash / Redpoint / Tentative
  *   5. "Logger la voie" CTA      — 64px primary button (UX-DR10)
  *   6. ClimbingLogPanel          — append-only route list + max grade
- *   7. HoldToFinish stub         — Story 2.6 will replace this
+ *   7. HoldToFinishButton        — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
 import { View, Text, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
@@ -20,6 +20,7 @@ import { useClimbingSession, V_GRADES } from '@/hooks/use-climbing-session';
 import { GradeDial } from '@/components/features/tracking/GradeDial';
 import { StyleSelector } from '@/components/features/tracking/StyleSelector';
 import { ClimbingLogPanel } from '@/components/features/tracking/ClimbingLogPanel';
+import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
 
 // ─── Timer formatter ──────────────────────────────────────────────────────────
 
@@ -47,7 +48,6 @@ export default function ClimbingScreen() {
   } = useClimbingSession();
 
   // ── Design tokens ─────────────────────────────────────────────────────────
-  // Climbing: brand-blue light / cyan dark (design system)
   const accent = isDark ? colors.primaryCyan : colors.brandBlue;
   const accentBg = isDark ? 'rgba(56,189,248,0.12)' : '#EFF6FF';
   const bg = isDark ? colors.darkBg : '#F8F9FA';
@@ -229,36 +229,25 @@ export default function ClimbingScreen() {
         maxGrade={metrics.maxGrade}
       />
 
-      {/* ── 7. HoldToFinish stub — Story 2.6 ───────────────────────────────── */}
+      {/* ── 7. HoldToFinishButton (UX-DR3) ──────────────────────────────────── */}
       <View
         style={{
           paddingHorizontal: 24,
           paddingBottom: 40,
           paddingTop: 12,
           backgroundColor: bg,
+          alignItems: 'center',
         }}
       >
-        <View
-          style={{
-            minHeight: 64,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 20,
-            backgroundColor: accent,
-            opacity: 0.45,
+        <HoldToFinishButton
+          onComplete={() => {
+            stopSession();
+            clearActiveSport();
+            router.replace('/(tabs)/' as any);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: '600',
-              color: '#FFFFFF',
-              fontFamily: 'Inter_600SemiBold',
-            }}
-          >
-            Maintenir pour terminer — Story 2.6
-          </Text>
-        </View>
+          accentColor={accent}
+          textColor={textMuted}
+        />
       </View>
     </View>
   );

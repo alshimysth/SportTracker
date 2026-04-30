@@ -146,7 +146,7 @@ export function ClimbingLogPanel({
               lineHeight: 18,
             }}
           >
-            Sélectionne un grade et un style{'\n'}puis appuie sur «&nbsp;Logger la voie&nbsp;»
+            Sélectionne un grade et un style{'\n'}puis appuie sur « Logger la voie »
           </Text>
         </View>
       ) : (
@@ -172,7 +172,6 @@ export function ClimbingLogPanel({
                   borderColor: cardBorder,
                 }}
               >
-                {/* Route number */}
                 <Text
                   style={{
                     fontSize: 12,
@@ -185,7 +184,6 @@ export function ClimbingLogPanel({
                   {routes.length - idx}
                 </Text>
 
-                {/* Grade chip */}
                 <View
                   style={{
                     backgroundColor: accentBg,
@@ -209,7 +207,6 @@ export function ClimbingLogPanel({
                   </Text>
                 </View>
 
-                {/* Style badge */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, flex: 1 }}>
                   <Text style={{ fontSize: 13 }}>{meta.emoji}</Text>
                   <Text
@@ -223,7 +220,6 @@ export function ClimbingLogPanel({
                   </Text>
                 </View>
 
-                {/* Relative time */}
                 <Text
                   style={{
                     fontSize: 12,
