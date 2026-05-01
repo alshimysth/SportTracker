@@ -11,7 +11,7 @@
  *   7. WorkoutLogPanel        — append-only set list + total volume
  *   8. HoldToFinishButton     — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
-import { View, Text, Pressable, Alert } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -26,6 +26,7 @@ import { ExercisePicker } from '@/components/features/tracking/ExercisePicker';
 import { SetInputRow } from '@/components/features/tracking/SetInputRow';
 import { WorkoutLogPanel } from '@/components/features/tracking/WorkoutLogPanel';
 import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
+import { useDiscardSheet } from '@/hooks/use-discard-sheet';
 
 // ─── Timer formatter ──────────────────────────────────────────────────────────
 
@@ -53,6 +54,7 @@ export default function WeightliftingScreen() {
     dismissRest,
     stopSession,
   } = useWeightliftingSession();
+  const showDiscard = useDiscardSheet();
 
   // ── Design tokens (Musculation: purple) ───────────────────────────────────
   const sportCfg  = SPORT_CONFIG.weightlifting;
@@ -69,21 +71,15 @@ export default function WeightliftingScreen() {
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   function handleDiscard() {
-    Alert.alert(
-      'Abandonner la séance ?',
-      'Tes séries non sauvegardées seront perdues.',
-      [
-        { text: 'Continuer', style: 'cancel' },
-        {
-          text: 'Abandonner',
-          style: 'destructive',
-          onPress: () => {
-            stopSession();
-            router.replace('/(tabs)/' as any);
-          },
-        },
-      ],
-    );
+    showDiscard({
+      title: 'Abandonner la séance ?',
+      message: 'Tes séries non sauvegardées seront perdues.',
+      confirmLabel: 'Abandonner',
+      onConfirm: () => {
+        stopSession();
+        router.replace('/(tabs)/' as any);
+      },
+    });
   }
 
   return (

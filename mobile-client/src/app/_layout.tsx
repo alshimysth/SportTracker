@@ -1,5 +1,6 @@
 import '../../global.css';
 
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import {
   Inter_400Regular,
@@ -70,6 +71,7 @@ export default function RootLayout() {
   // The native splash screen stays visible until SplashScreen.hideAsync() is called.
   return (
     <QueryClientProvider client={queryClient}>
+      <ActionSheetProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -84,6 +86,7 @@ export default function RootLayout() {
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
+      </ActionSheetProvider>
     </QueryClientProvider>
   );
 }

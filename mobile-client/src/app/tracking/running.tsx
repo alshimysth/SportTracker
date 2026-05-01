@@ -8,7 +8,7 @@
  *   4. GPS status chip       — lock indicator
  *   5. HoldToFinishButton    — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
-import { View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import MapView, { Polyline, Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +18,7 @@ import { useSportStore } from '@/store/use-sport-store';
 import { useRunningTracker } from '@/hooks/use-running-tracker';
 import { RunningMetricsDisplay } from '@/components/features/tracking/RunningMetricsDisplay';
 import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
+import { useDiscardSheet } from '@/hooks/use-discard-sheet';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -25,6 +26,7 @@ export default function RunningScreen() {
   const isDark = useColorScheme() === 'dark';
   const { clearActiveSport } = useSportStore();
   const { metrics, stopTracking } = useRunningTracker();
+  const showDiscard = useDiscardSheet();
 
   // ── Design tokens ───────────────────────────────────────────────────────────
   const accent = colors.brandOrange;          // Running = coral always
@@ -36,22 +38,16 @@ export default function RunningScreen() {
   const metricDivider = isDark ? colors.darkBorder : '#E5E7EB';
 
   function handleDiscard() {
-    Alert.alert(
-      'Abandonner la course ?',
-      'Ta progression sera perdue.',
-      [
-        { text: 'Continuer', style: 'cancel' },
-        {
-          text: 'Abandonner',
-          style: 'destructive',
-          onPress: () => {
-            stopTracking();
-            clearActiveSport();
-            router.replace('/(tabs)/' as any);
-          },
-        },
-      ],
-    );
+    showDiscard({
+      title: 'Abandonner la course ?',
+      message: 'Ta progression sera perdue.',
+      confirmLabel: 'Abandonner',
+      onConfirm: () => {
+        stopTracking();
+        clearActiveSport();
+        router.replace('/(tabs)/' as any);
+      },
+    });
   }
 
   // ── Permission denied ───────────────────────────────────────────────────────
