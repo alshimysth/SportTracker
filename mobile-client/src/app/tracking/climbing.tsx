@@ -10,7 +10,7 @@
  *   6. ClimbingLogPanel          — append-only route list + max grade
  *   7. HoldToFinishButton        — 1.5s hold, SVG ring, haptics (UX-DR3)
  */
-import { View, Text, Pressable, Alert } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -21,6 +21,7 @@ import { GradeDial } from '@/components/features/tracking/GradeDial';
 import { StyleSelector } from '@/components/features/tracking/StyleSelector';
 import { ClimbingLogPanel } from '@/components/features/tracking/ClimbingLogPanel';
 import { HoldToFinishButton } from '@/components/features/tracking/HoldToFinishButton';
+import { useDiscardSheet } from '@/hooks/use-discard-sheet';
 
 // ─── Timer formatter ──────────────────────────────────────────────────────────
 
@@ -46,6 +47,7 @@ export default function ClimbingScreen() {
     logRoute,
     stopSession,
   } = useClimbingSession();
+  const showDiscard = useDiscardSheet();
 
   // ── Design tokens ─────────────────────────────────────────────────────────
   const accent = isDark ? colors.primaryCyan : colors.brandBlue;
@@ -61,22 +63,16 @@ export default function ClimbingScreen() {
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   function handleDiscard() {
-    Alert.alert(
-      'Abandonner la session ?',
-      'Tes voies non sauvegardées seront perdues.',
-      [
-        { text: 'Continuer', style: 'cancel' },
-        {
-          text: 'Abandonner',
-          style: 'destructive',
-          onPress: () => {
-            stopSession();
-            clearActiveSport();
-            router.replace('/(tabs)/' as any);
-          },
-        },
-      ],
-    );
+    showDiscard({
+      title: 'Abandonner la session ?',
+      message: 'Tes voies non sauvegardées seront perdues.',
+      confirmLabel: 'Abandonner',
+      onConfirm: () => {
+        stopSession();
+        clearActiveSport();
+        router.replace('/(tabs)/' as any);
+      },
+    });
   }
 
   return (
